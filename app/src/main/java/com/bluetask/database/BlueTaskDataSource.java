@@ -1,5 +1,6 @@
 package com.bluetask.database;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,6 +30,42 @@ public class BlueTaskDataSource {
 
     public void close(){
         mHelper.close();
+    }
+
+
+    public void createReminder(Reminder reminder){
+
+        ContentValues valuesRem = new ContentValues();
+        ContentValues valuesPos = new ContentValues();
+        ContentValues valuesRemPos = new ContentValues();
+        //Converting boolean to int
+        int isDone = reminder.isDone() ? 1 : 0;
+
+        //Adding all Reminder info to the reminder table
+        valuesRem.put(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME, reminder.getName());
+        valuesRem.put(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR, reminder.getDescription());
+        valuesRem.put(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE, reminder.getDate());
+        valuesRem.put(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE, isDone);
+        int insertIDRem = (int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_REMINDERS, null, valuesRem);
+
+        //Getting all positions specified in the reminder and writing them to the position table
+        List<Integer> insertIDPos = new ArrayList<>();
+        for(Position pos : reminder.getPositionsList()){
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE, pos.getTitle());
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_CITY, pos.getCity());
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_ZIP, pos.getZip());
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STREET, pos.getStreet());
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STR_NUM, pos.getStr_num());
+            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA,pos.getGeo_data());
+            insertIDPos.add((int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_POSITIONS, null, valuesPos));
+        }
+
+        //Finally establishing mapping between the tables by entering the row IDs to the intersection table reminderPositions
+        for(int i : insertIDPos){
+            valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_POS_ID, i);
+            valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID, insertIDRem);
+            int insertIDRemPos = (int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS, null, valuesRemPos);
+        }
     }
 
     public List<Reminder> getAllReminders(){
@@ -83,6 +120,8 @@ public class BlueTaskDataSource {
 
         return reminderPositions;
     }
+
+
 
 
 }

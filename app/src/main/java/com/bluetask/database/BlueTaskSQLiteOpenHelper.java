@@ -73,4 +73,9 @@ public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERPOSITIONS + ", " + TABLE_POSITIONS + ", " + TABLE_REMINDERS);
         onCreate(db);
     }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db){
+        db.setForeignKeyConstraintsEnabled(true);
+    }
 }
