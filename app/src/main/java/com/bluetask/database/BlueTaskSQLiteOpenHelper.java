@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  * The SQLiteOpenHelper class manages database creation and version management
  */
-public class BlueTaskSQLiteOpenHelper {
+public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "bluetask.db";
     private static final int DATABASE_VERSION = 0;
@@ -59,7 +59,7 @@ public class BlueTaskSQLiteOpenHelper {
                 + "PRIMARY KEY (" + REMINDERPOSITIONS_COLUMN_REM_ID + ", " + REMINDERPOSITIONS_COLUMN_POS_ID + ")"
                 + ");";
 
-    public BlueTaskSQLiteOpenHelper(Context context){
+    public BlueTaskSQLiteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
