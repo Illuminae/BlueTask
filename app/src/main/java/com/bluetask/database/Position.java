@@ -15,6 +15,16 @@ public class Position {
     private String city;
     private String geo_data;
 
+    public Position(int id, String title, String city, int zip, String street, String str_num, String geo_data) {
+        this.id = id;
+        this.title = title;
+        this.city = city;
+        this.zip = zip;
+        this.street = street;
+        this.str_num = str_num;
+        this.geo_data = geo_data;
+    }
+
     public int getId() {
         return id;
     }
