@@ -22,11 +22,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-                finish();
+                //to be added
             }
         });
     }
@@ -46,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_switch_maps) {
+            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+            startActivity(intent);
+            finish();
             return true;
         }
 

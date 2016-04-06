@@ -4,8 +4,8 @@
     tools:context="com.bluetask.MainActivity">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_switch_maps"
-        android:icon="@drawable/ic_place_black_24px"
-        android:title="@string/action_switch_maps"
+        android:id="@+id/action_switch_main"
+        android:icon="@drawable/ic_reorder_black_24px"
+        android:title="@string/action_switch_main"
         app:showAsAction="ifRoom"/>
 </menu>
