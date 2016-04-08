@@ -11,6 +11,10 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+
+    public final static int RESULT_SAVE = 1;
+    public final static int RESULT_CANCEL = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //to be added
+                Intent addReminderIntent = new Intent(MainActivity.this, AddReminderActivity.class);
+                startActivity(addReminderIntent);
+                finish();
             }
         });
     }

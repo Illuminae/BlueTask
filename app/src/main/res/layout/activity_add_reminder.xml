@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddReminderActivity">
+
+    <Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/add_toolbar"
+
+        android:titleTextColor="#ffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Title"
+        android:layout_margin="8dp"
+        android:id="@+id/add_text_name"
+        android:layout_below="@id/add_toolbar"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Enter title"
+        android:ems="10"
+        android:layout_margin="8dp"
+        android:id="@+id/add_edittext_title"
+        android:layout_below="@+id/add_text_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Description"
+        android:layout_margin="8dp"
+        android:id="@+id/add_text_description"
+        android:layout_below="@id/add_edittext_title"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="Enter description"
+        android:ems="10"
+        android:layout_margin="8dp"
+        android:id="@+id/add_edittext_description"
+        android:layout_below="@+id/add_text_description"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Location"
+        android:layout_margin="8dp"
+        android:id="@+id/add_location"
+        android:layout_below="@id/add_edittext_description"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="Add Location"
+        android:ems="10"
+        android:layout_margin="8dp"
+        android:id="@+id/add_location_description"
+        android:layout_below="@+id/add_location"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_margin="8dp"
+        android:id="@+id/add_btn_save"
+        android:layout_below="@+id/add_location_description"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_margin="8dp"
+        android:id="@+id/add_button_cancel"
+        android:layout_below="@+id/add_location_description"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
