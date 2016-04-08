@@ -20,7 +20,7 @@ public class AddReminderActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_reminder);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.add_toolbar);
         toolbar.setTitle("Add new reminder");
         setSupportActionBar(toolbar);
 
@@ -51,7 +51,7 @@ public class AddReminderActivity extends AppCompatActivity{
 
     private void finishWithResult(int resultCode)  {
         setResult(resultCode);
-        finish();
+        super.onBackPressed();
     }
 
     //TODO write function that saves field values to DB
