@@ -25,6 +25,13 @@ public class Reminder {
         this.positionsList = positionsList;
     }
 
+    public Reminder(String name, String descr, int date, boolean done, List<Position> positionsList) {
+        this.name = name;
+        this.description = descr;
+        this.done = done;
+        this.positionsList = positionsList;
+    }
+
     public int getId() {
         return id;
     }

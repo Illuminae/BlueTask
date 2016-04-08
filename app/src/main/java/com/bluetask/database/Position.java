@@ -25,6 +25,15 @@ public class Position {
         this.geo_data = geo_data;
     }
 
+    public Position(String title, String city, int zip, String street, String str_num, String geo_data) {
+        this.title = title;
+        this.city = city;
+        this.zip = zip;
+        this.street = street;
+        this.str_num = str_num;
+        this.geo_data = geo_data;
+    }
+
     public int getId() {
         return id;
     }
