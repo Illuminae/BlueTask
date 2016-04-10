@@ -3,8 +3,13 @@ package com.bluetask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.bluetask.database.BlueTaskDataSource;
 
@@ -47,6 +52,12 @@ public class AddReminderActivity extends AppCompatActivity{
                 finishWithResult(MainActivity.RESULT_CANCEL);
             }
         });
+
+        //populate location when started from MapsActivity
+        String text = (String) getIntent().getStringExtra("point");
+        EditText editText = (EditText) findViewById(R.id.add_location_description);
+        editText.setText(text);
+
     }
 
     private void finishWithResult(int resultCode)  {
