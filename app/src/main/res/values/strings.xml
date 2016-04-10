@@ -2,6 +2,7 @@
     <string name="app_name">BlueTask</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_add_reminder">Add Reminder</string>
     <string name="action_switch_main">Switch to Main</string>
     <string name="action_switch_maps">Switch to Map</string>
 </resources>

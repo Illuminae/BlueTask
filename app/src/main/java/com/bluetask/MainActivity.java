@@ -11,6 +11,10 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final static int REQUEST_ADD_REMINDER = 0;
+    public final static int RESULT_SAVE = 1;
+    public final static int RESULT_CANCEL = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //to be added
+                Intent addReminderIntent = new Intent(MainActivity.this, AddReminderActivity.class);
+                // We require a result whether or not to update the List
+                startActivityForResult(addReminderIntent, REQUEST_ADD_REMINDER);
             }
         });
     }
@@ -32,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Updates the displayed list when the Activity becomes visible
+       // TODO write updateList()
+       // updateList();
     }
 
     @Override
@@ -51,4 +66,26 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    /**
+     * this is called when an activity finishes which was called via
+     * startActivityForResult
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //check the request code of the result
+        if(requestCode == REQUEST_ADD_REMINDER)  {
+            //check the result code of the result
+            if(resultCode == RESULT_SAVE)  {
+                //our new friend was stored to the database
+                //thus we need to update our list
+                //TODO: uncomment once updateList has been implemented
+                //updateList();
+            }
+            else if(resultCode == RESULT_CANCEL)  {
+                //nothing happened, we don't need to do anything
+            }
+        }
+    }
+
 }
