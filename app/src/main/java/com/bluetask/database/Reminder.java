@@ -20,6 +20,7 @@ public class Reminder {
     public Reminder(int id, String name, String descr, int date, boolean done, List<Position> positionsList) {
         this.id = id;
         this.name = name;
+        this.date = date;
         this.description = descr;
         this.done = done;
         this.positionsList = positionsList;
@@ -28,6 +29,7 @@ public class Reminder {
     public Reminder(String name, String descr, int date, boolean done, List<Position> positionsList) {
         this.name = name;
         this.description = descr;
+        this.date = date;
         this.done = done;
         this.positionsList = positionsList;
     }
