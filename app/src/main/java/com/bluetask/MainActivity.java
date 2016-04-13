@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_switch_maps) {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
-            finish();
             return true;
         }
 

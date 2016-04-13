@@ -1,9 +1,7 @@
 package com.bluetask;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -13,10 +11,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap mMap;
 
     @Override
@@ -68,11 +67,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setOnMapLongClickListener(this);
         // Add a marker in Sydney and move the camera
         LatLng mannheim = new LatLng(49.4889,8.4692);
         mMap.addMarker(new MarkerOptions().position(mannheim).title("Marker in Mannheim"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mannheim));
+    }
+
+    @Override
+    public void onMapLongClick(LatLng point) {
+        String text = point.toString();
+        Intent intent = new Intent(MapsActivity.this,AddReminderActivity.class);
+        intent.putExtra("point", text);
+        startActivity(intent);
+        finish();
+
     }
 
 }

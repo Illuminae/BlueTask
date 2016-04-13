@@ -51,6 +51,12 @@ public class AddReminderActivity extends AppCompatActivity{
                 finishWithResult(MainActivity.RESULT_CANCEL);
             }
         });
+
+        //populate location when started from MapsActivity
+        String text = (String) getIntent().getStringExtra("point");
+        EditText editText = (EditText) findViewById(R.id.add_location_description);
+        editText.setText(text);
+
     }
 
     private void finishWithResult(int resultCode)  {
