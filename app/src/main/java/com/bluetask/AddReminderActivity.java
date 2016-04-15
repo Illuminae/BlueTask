@@ -76,7 +76,7 @@ public class AddReminderActivity extends AppCompatActivity{
             List<Position> remPositions = new ArrayList<>();
             //For testing purposes I am creating a fake position as adding Positions is not yet
             // possible in the AddReminder view
-            Position testPosition = new Position("Zu Hause", "Mannheim",68159, "Holzstr.", "9", "49.494743, 8.463979");
+            Position testPosition = new Position("Zu Hause", 2000, "49.494743, 8.463979");
             remPositions.add(testPosition);
             int time = (int) System.currentTimeMillis() % Integer.MAX_VALUE;
             Reminder newReminder = new Reminder(reminderTitle, reminderDescr, time, false, remPositions);
