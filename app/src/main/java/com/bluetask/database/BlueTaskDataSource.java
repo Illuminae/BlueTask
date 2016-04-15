@@ -129,6 +129,9 @@ public class BlueTaskDataSource {
         String reminder_id = Integer.toString(rem_id);
         Cursor cursor = mDB.rawQuery("UPDATE " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + " SET " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE
                 + "= 1 WHERE " + BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID + " = " + reminder_id + ";", null);
+
+        cursor.moveToFirst();
+        cursor.close();
     }
 
 
