@@ -70,7 +70,8 @@ public class BlueTaskDataSource {
     public List<Reminder> getAllReminders(){
 
         // Select * FROM TABLE reminders
-        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
+                + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE + " = 0;", null);
 
         List<Reminder> allReminders = new ArrayList<>();
         boolean next = cursor.moveToFirst();
@@ -124,6 +125,11 @@ public class BlueTaskDataSource {
         return reminderPositions;
     }
 
+    public void setReminderDone(int rem_id){
+        String reminder_id = Integer.toString(rem_id);
+        Cursor cursor = mDB.rawQuery("UPDATE " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + " SET " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE
+                + "= 1 WHERE " + BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID + " = " + reminder_id + ";", null);
+    }
 
 
 

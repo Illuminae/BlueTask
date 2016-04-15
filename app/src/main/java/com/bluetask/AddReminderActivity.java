@@ -72,12 +72,32 @@ public class AddReminderActivity extends AppCompatActivity{
         EditText reminderDescrEditText = (EditText) findViewById(R.id.add_edittext_description);
         String reminderDescr = reminderDescrEditText.getText().toString();
 
+        EditText reminderLocationEditText = (EditText) findViewById((R.id.add_location_description));
+        String locationCoordinates = reminderLocationEditText.getText().toString();
+
+        EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
+        String radiusDescr = reminderLocationEditText.getText().toString();
+
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();
-            //For testing purposes I am creating a fake position as adding Positions is not yet
-            // possible in the AddReminder view
-            Position testPosition = new Position("Zu Hause", 2000, "49.494743, 8.463979");
-            remPositions.add(testPosition);
+            // Get Radius from Edittext field and convert to int
+            int radius;
+            if (radiusDescr.length() == 0) {
+                //Default radius 400m if no value was given
+                radius = 400;
+            } else {
+                radius = Integer.parseInt(radiusDescr);
+            }
+            //TODO: Check if multiple locations are given!
+            //For now check is done if Position empty, otherwise Position object is instantiated.
+            if (locationCoordinates.length() == 0) {
+                Position noPosition = null;
+                remPositions.add(noPosition);
+            } else {
+                Position newPosition = new Position(reminderTitle, radius, locationCoordinates);
+                remPositions.add(newPosition);
+            }
+
             int time = (int) System.currentTimeMillis() % Integer.MAX_VALUE;
             Reminder newReminder = new Reminder(reminderTitle, reminderDescr, time, false, remPositions);
             dataSource.createReminder(newReminder);
