@@ -6,4 +6,8 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.bluetask.MapsActivity" />
+    tools:context="com.bluetask.MapsActivity"
+    map:cameraZoom="2"
+    map:cameraTargetLat="49.4889"
+    map:cameraTargetLng="8.4692"
+    />
