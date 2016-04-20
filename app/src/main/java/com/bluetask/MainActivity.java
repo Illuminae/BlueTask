@@ -20,6 +20,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bluetask.R.id.ToDoList;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     //the database (copied from serieslist example)
     private BlueTaskDataSource mDB;
     //items that should be shown by the list view are stored here (copied from serieslist example)
-    private ArrayAdapter<Reminder> mAdapter;
+    private ArrayAdapter<String> mAdapter;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -169,8 +170,14 @@ public class MainActivity extends AppCompatActivity {
         //Get all reminders from the database
         List<Reminder> allReminders = mDB.getAllReminders();
 
-        //update the adapter, TODO: Here seems to be an error?
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allReminders);
+        List<String> allNames = new ArrayList<>();
+
+        for (Reminder r: allReminders) {
+            allNames.add(r.getName());
+        }
+
+        //update the adapter
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allNames);
         ListView lv = (ListView) findViewById(ToDoList);
         lv.setAdapter(mAdapter);
     }
