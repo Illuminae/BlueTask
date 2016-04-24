@@ -2,6 +2,7 @@ package com.bluetask;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Reminder;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.bluetask.R.id.ToDoList;
+import static com.bluetask.R.id.distance;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
         //registers the list view for the context menu (copied from serieslist example)
         ListView listView = (ListView) findViewById(ToDoList);
-        registerForContextMenu(listView);
+        /*RemListAdapter remListAdapter = new RemListAdapter(getApplicationContext(),R.layout.list_item);
+        listView.setAdapter(remListAdapter);
+        registerForContextMenu(listView); */
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //update the adapter
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allNames);
+        mAdapter = new ArrayAdapter<>(this, R.layout.list_item, allNames);
         ListView lv = (ListView) findViewById(ToDoList);
         lv.setAdapter(mAdapter);
     }
@@ -221,5 +226,36 @@ public class MainActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+
+/*
+    // POPULATE??
+    private void populateToDoList() {
+        Cursor cursor = mDB.getAllReminders();
+
+        // Allow activity to manage lifetime of the cursor
+        //DEPRECATED!
+        startManagingCursor(cursor);
+
+        //Set up mapping from cursor to view fields:
+        String[] reminderNames = new String[]
+                {BlueTaskDataSource.REMINDER_COLUMN_NAME, BlueTaskDataSource.REMINDER_COLUMN_DESCR};
+        int[] toViewName = new int[]
+        {R.id.name};
+
+        //Create Adapter to match columns of the DB onto elements in the UI
+        SimpleCursorAdapter BlueTaskDataSource =
+                new SimpleCursorAdapter(
+                    this, // Context
+                    R.layout.list_item, // Row Layout template
+                    cursor,             // Cursor
+                    reminderNames,      // DB Column names
+                    toViewName,         // View Names to put information in
+                );
+
+        // Set adapter for list view
+        ListView lv = (ListView) findViewById(R.id.ToDoList);
+        myList.setAdapter(RemListAdapter)
+    }
+*/
     }
 }

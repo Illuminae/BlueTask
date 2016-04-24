@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:focusableInTouchMode="true">
+
+<TableRow android:layout_width="fill_parent"
+    android:id="@+id/TableRow01"
+    android:layout_height="wrap_content">
+
+    <TextView android:textColor="#FFFFFF"
+        android:id="@+id/name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Name of the Reminder"
+        android:textStyle="bold"
+        android:gravity="start"
+        android:layout_weight="1"
+        android:typeface="monospace"
+        android:height="30sp" />
+</TableRow>
+
+<TableRow android:layout_height="wrap_content"
+    android:layout_width="fill_parent">
+
+    <TextView android:textColor="#FFFFFF"
+        android:id="@+id/description"
+        android:layout_width="140sp"
+        android:layout_height="wrap_content"
+        android:text="Description of the reminder"
+        android:layout_weight="1"
+        android:height="50sp" />
+
+    <TextView android:layout_height="wrap_content"
+        android:layout_width="10sp"
+        android:layout_weight="1"
+        android:textColor="#FFFFFF"
+        android:gravity="end"
+        android:id="@+id/distance"
+        android:text="Distance"
+        android:height="40sp" />
+
+    <CheckBox
+        android:layout_width="50sp"
+        android:layout_height="40sp"
+        android:text=""
+        android:id="@+id/checkBox"
+        android:layout_column="15" />
+</TableRow>
+
+</RelativeLayout>
