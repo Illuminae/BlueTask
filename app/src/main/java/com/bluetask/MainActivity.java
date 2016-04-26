@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
         //registers the list view for the context menu (copied from serieslist example)
         ListView listView = (ListView) findViewById(ToDoList);
-        /*RemListAdapter remListAdapter = new RemListAdapter(getApplicationContext(),R.layout.list_item);
+        RemListAdapter remListAdapter = new RemListAdapter(getApplicationContext(),R.layout.list_item);
         listView.setAdapter(remListAdapter);
-        registerForContextMenu(listView); */
+        registerForContextMenu(listView);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
 
-/*
+
     // POPULATE??
     private void populateToDoList() {
         Cursor cursor = mDB.getAllReminders();

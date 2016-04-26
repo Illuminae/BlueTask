@@ -1,4 +1,4 @@
-/* package com.bluetask;
+package com.bluetask;
 
 import android.content.Context;
 import android.provider.CalendarContract;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by benjaminchee on 23.04.16.
  */
-/* public class RemListAdapter extends ArrayAdapter {
+public class RemListAdapter extends ArrayAdapter {
     private List list = new ArrayList();
 
     public RemListAdapter(Context context, int resource) {
@@ -74,7 +74,7 @@ import java.util.ArrayList;
     }
 }
 
-/*
+
     String[] reminders;
     Context ctxt;
     LayoutInflater ReminderInflator;
@@ -117,4 +117,4 @@ import java.util.ArrayList;
     }
 
 
-*/
+
