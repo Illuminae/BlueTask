@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluetask.database.BlueTaskDataSource;
 
@@ -33,7 +34,8 @@ public class AddReminderActivity extends AppCompatActivity{
         dataSource.open();
 
         Button btnSave = (Button) findViewById(R.id.add_btn_save);
-        Button btnCancel = (Button) findViewById(R.id.add_button_cancel);
+        Button btnCancel = (Button) findViewById(R.id.add_btn_cancel);
+        Button btnAddLocation = (Button) findViewById(R.id.add_btn_addLocation);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +55,16 @@ public class AddReminderActivity extends AppCompatActivity{
             }
         });
 
+        btnAddLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Add location!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //populate location when started from MapsActivity
         String text = (String) getIntent().getStringExtra("point");
-        EditText editText = (EditText) findViewById(R.id.add_location_description);
+        TextView editText = (TextView) findViewById(R.id.add_location_description);
         editText.setText(text);
 
     }
