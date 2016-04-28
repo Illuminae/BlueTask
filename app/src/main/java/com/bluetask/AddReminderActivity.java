@@ -3,15 +3,9 @@ package com.bluetask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
@@ -38,8 +32,7 @@ public class AddReminderActivity extends AppCompatActivity{
         dataSource.open();
 
         Button btnSave = (Button) findViewById(R.id.add_btn_save);
-        Button btnCancel = (Button) findViewById(R.id.add_btn_cancel);
-        Button btnAddLocation = (Button) findViewById(R.id.add_btn_addLocation);
+        Button btnCancel = (Button) findViewById(R.id.add_button_cancel);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,16 +52,9 @@ public class AddReminderActivity extends AppCompatActivity{
             }
         });
 
-        btnAddLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Add location!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         //populate location when started from MapsActivity
         String text = (String) getIntent().getStringExtra("point");
-        TextView editText = (TextView) findViewById(R.id.add_location_description);
+        EditText editText = (EditText) findViewById(R.id.add_location_description);
         editText.setText(text);
 
     }
@@ -86,11 +72,11 @@ public class AddReminderActivity extends AppCompatActivity{
         EditText reminderDescrEditText = (EditText) findViewById(R.id.add_edittext_description);
         String reminderDescr = reminderDescrEditText.getText().toString();
 
-        TextView reminderLocationEditText = (TextView) findViewById((R.id.add_location_description));
+        EditText reminderLocationEditText = (EditText) findViewById((R.id.add_location_description));
         String locationCoordinates = reminderLocationEditText.getText().toString();
 
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
-        String radiusDescr = reminderRadiusEditText.getText().toString();
+        String radiusDescr = reminderLocationEditText.getText().toString();
 
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();
