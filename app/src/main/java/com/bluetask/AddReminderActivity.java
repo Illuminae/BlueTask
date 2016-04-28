@@ -86,7 +86,7 @@ public class AddReminderActivity extends AppCompatActivity{
         EditText reminderDescrEditText = (EditText) findViewById(R.id.add_edittext_description);
         String reminderDescr = reminderDescrEditText.getText().toString();
 
-        EditText reminderLocationEditText = (EditText) findViewById((R.id.add_location_description));
+        TextView reminderLocationEditText = (TextView) findViewById((R.id.add_location_description));
         String locationCoordinates = reminderLocationEditText.getText().toString();
 
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
