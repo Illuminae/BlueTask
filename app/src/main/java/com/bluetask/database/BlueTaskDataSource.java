@@ -49,29 +49,29 @@ public class BlueTaskDataSource {
         int insertIDRem = (int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_REMINDERS, null, valuesRem);
 
         //Getting all positions specified in the reminder and writing them to the position table
-        List<Integer> insertIDPos = new ArrayList<>();
-        for(Position pos : reminder.getPositionsList()){
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE, pos.getTitle());
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_CITY, pos.getCity());
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_ZIP, pos.getZip());
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STREET, pos.getStreet());
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STR_NUM, pos.getStr_num());
-            valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA,pos.getGeo_data());
-            insertIDPos.add((int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_POSITIONS, null, valuesPos));
-        }
+        if(reminder.getPositionsList() != null) {
+            List<Integer> insertIDPos = new ArrayList<>();
+            for (Position pos : reminder.getPositionsList()) {
+                valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE, pos.getTitle());
+                valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_RADIUS, pos.getRadius());
+                valuesPos.put(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA, pos.getGeo_data());
+                insertIDPos.add((int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_POSITIONS, null, valuesPos));
+            }
 
-        //Finally establishing mapping between the tables by entering the row IDs to the intersection table reminderPositions
-        for(int i : insertIDPos){
-            valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_POS_ID, i);
-            valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID, insertIDRem);
-            int insertIDRemPos = (int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS, null, valuesRemPos);
+            //Finally establishing mapping between the tables by entering the row IDs to the intersection table reminderPositions
+            for (int i : insertIDPos) {
+                valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_POS_ID, i);
+                valuesRemPos.put(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID, insertIDRem);
+                int insertIDRemPos = (int) mDB.insert(BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS, null, valuesRemPos);
+            }
         }
     }
 
     public List<Reminder> getAllReminders(){
 
         // Select * FROM TABLE reminders
-        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
+                + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE + " = 0;", null);
 
         List<Reminder> allReminders = new ArrayList<>();
         boolean next = cursor.moveToFirst();
@@ -86,8 +86,15 @@ public class BlueTaskDataSource {
             done = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE) == 1;
             //TO DO: Write and Query function that gets all Positions for the Reminder and adds it to the constructor call
 
-            List<Position> reminderPositions = getPositionsForReminder(id);
-            allReminders.add(new Reminder(id, name, descr, date, done, reminderPositions));
+
+            if(getPositionsForReminder(id) != null) {
+                List<Position> reminderPositions = getPositionsForReminder(id);
+                allReminders.add(new Reminder(id, name, descr, date, done, reminderPositions));
+            } else {
+                List<Position> reminderPositions = null;
+                allReminders.add(new Reminder(id, name, descr, date, done, reminderPositions));
+            }
+
             next = cursor.moveToNext();
         }
 
@@ -108,19 +115,24 @@ public class BlueTaskDataSource {
         while(next){
             int id = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_ID);
             String title = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE));
-            String city = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_CITY));
-            int zip = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_ZIP);
-            String street = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STREET));
-            String str_num = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_STR_NUM));
+            int radius = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_RADIUS);
             String geo_data = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA));
 
-            reminderPositions.add(new Position(id, title, city, zip, street, str_num, geo_data));
+            reminderPositions.add(new Position(id, title, radius, geo_data));
             next = cursor.moveToNext();
         }
 
         return reminderPositions;
     }
 
+    public void setReminderDone(int rem_id){
+        String reminder_id = Integer.toString(rem_id);
+        Cursor cursor = mDB.rawQuery("UPDATE " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + " SET " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE
+                + "= 1 WHERE " + BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID + " = " + reminder_id + ";", null);
+
+        cursor.moveToFirst();
+        cursor.close();
+    }
 
 
 

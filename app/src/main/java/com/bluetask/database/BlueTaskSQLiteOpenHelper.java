@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "bluetask.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_REMINDERS = "reminders";
     public static final String TABLE_REMINDERPOSITIONS = "rem_pos";
@@ -26,10 +26,7 @@ public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
     public static final String REMINDERPOSITIONS_COLUMN_POS_ID = "pos_id";
     public static final String POSITIONS_COLUMN_POS_ID = "pos_id";
     public static final String POSITIONS_COLUMN_POS_TITLE = "pos_title";
-    public static final String POSITIONS_COLUMN_STREET = "street";
-    public static final String POSITIONS_COLUMN_STR_NUM = "str_num";
-    public static final String POSITIONS_COLUMN_ZIP = "zip";
-    public static final String POSITIONS_COLUMN_CITY = "city";
+    public static final String POSITIONS_COLUMN_RADIUS = "radius";
     public static final String POSITIONS_COLUMN_GEO_DATA = "geo_data";
 
     private static final String CREATE_TABLE_REMINDERS =
@@ -44,10 +41,7 @@ public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
             "CREATE TABLE " + TABLE_POSITIONS + "("
                 + POSITIONS_COLUMN_POS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + POSITIONS_COLUMN_POS_TITLE + " TEXT NOT NULL, "
-                + POSITIONS_COLUMN_CITY + " TEXT, "
-                + POSITIONS_COLUMN_ZIP + " INTEGER, "
-                + POSITIONS_COLUMN_STREET + " TEXT, "
-                + POSITIONS_COLUMN_STR_NUM + " TEXT, "
+                + POSITIONS_COLUMN_RADIUS + " INTEGER, "
                 + POSITIONS_COLUMN_GEO_DATA + " TEXT NOT NULL"
                 + ");";
     private static final String CREATE_TABLE_REMINDERPOSITIONS =

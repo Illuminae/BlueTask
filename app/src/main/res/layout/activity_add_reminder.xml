@@ -64,15 +64,36 @@
         android:layout_below="@id/add_edittext_description"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_margin="8dp"
+        android:id="@+id/add_location_description"
+        android:layout_below="@+id/add_location"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Reminder radius"
+        android:layout_margin="8dp"
+        android:id="@+id/add_radius"
+        android:layout_below="@id/add_location_description"
+        android:layout_alignParentStart="true" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
-        android:hint="Add Location"
+        android:hint="Enter reminder radius in meters"
         android:ems="10"
         android:layout_margin="8dp"
-        android:id="@+id/add_location_description"
-        android:layout_below="@+id/add_location"
+        android:id="@+id/add_edittext_radius"
+        android:layout_below="@+id/add_radius"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
@@ -82,7 +103,7 @@
         android:text="Save"
         android:layout_margin="8dp"
         android:id="@+id/add_btn_save"
-        android:layout_below="@+id/add_location_description"
+        android:layout_below="@+id/add_edittext_radius"
         android:layout_alignParentEnd="true" />
 
     <Button
@@ -90,7 +111,18 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:layout_margin="8dp"
-        android:id="@+id/add_button_cancel"
-        android:layout_below="@+id/add_location_description"
+        android:id="@+id/add_btn_cancel"
+        android:layout_below="@+id/add_edittext_radius"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add location"
+        android:id="@+id/add_btn_addLocation"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignTop="@+id/add_btn_save"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
