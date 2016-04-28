@@ -3,7 +3,6 @@ package com.bluetask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,7 +76,7 @@ public class AddReminderActivity extends AppCompatActivity{
         String locationCoordinates = reminderLocationEditText.getText().toString();
 
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
-        String radiusDescr = reminderRadiusEditText.getText().toString();
+        String radiusDescr = reminderLocationEditText.getText().toString();
 
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();

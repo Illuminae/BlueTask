@@ -5,13 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<include
-    android:id="@+id/toolbar"
-    layout="@layout/toolbar">
-</include>
-
     <include
         android:id="@+id/toolbar"
+        layout="@layout/toolbar">
+    </include>
+    <include
+        android:id="@+id/content_maps"
         layout="@layout/content_maps">
     </include>
 

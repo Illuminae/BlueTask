@@ -64,12 +64,11 @@
         android:layout_below="@id/add_edittext_description"
         android:layout_alignParentStart="true" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:hint="Add Location"
-        android:ems="10"
+        android:text="-"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_margin="8dp"
         android:id="@+id/add_location_description"
         android:layout_below="@+id/add_location"
@@ -104,7 +103,7 @@
         android:text="Save"
         android:layout_margin="8dp"
         android:id="@+id/add_btn_save"
-        android:layout_below="@+id/add_edittext_radius"
+        android:layout_below="@+id/add_location_description"
         android:layout_alignParentEnd="true" />
 
     <Button
@@ -112,7 +111,18 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:layout_margin="8dp"
-        android:id="@+id/add_button_cancel"
-        android:layout_below="@+id/add_edittext_radius"
+        android:id="@+id/add_btn_cancel"
+        android:layout_below="@+id/add_location_description"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add location"
+        android:id="@+id/add_btn_addLocation"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_alignTop="@+id/add_btn_save"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
