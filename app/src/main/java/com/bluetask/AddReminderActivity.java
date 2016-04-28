@@ -78,7 +78,7 @@ public class AddReminderActivity extends AppCompatActivity{
         String locationCoordinates = reminderLocationEditText.getText().toString();
 
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
-        String radiusDescr = reminderLocationEditText.getText().toString();
+        String radiusDescr = reminderRadiusEditText.getText().toString();
 
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();
@@ -92,13 +92,11 @@ public class AddReminderActivity extends AppCompatActivity{
             }
             //TODO: Check if multiple locations are given!
             //For now check is done if Position empty, otherwise Position object is instantiated.
-            if (locationCoordinates.length() == 0) {
-                Position noPosition = null;
-                remPositions.add(noPosition);
-            } else {
+            if (locationCoordinates.length() != 0) {
                 Position newPosition = new Position(reminderTitle, radius, locationCoordinates);
                 remPositions.add(newPosition);
             }
+
 
             int time = (int) System.currentTimeMillis() % Integer.MAX_VALUE;
             Reminder newReminder = new Reminder(reminderTitle, reminderDescr, time, false, remPositions);
