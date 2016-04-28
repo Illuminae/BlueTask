@@ -90,7 +90,7 @@ public class AddReminderActivity extends AppCompatActivity{
         String locationCoordinates = reminderLocationEditText.getText().toString();
 
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
-        String radiusDescr = reminderLocationEditText.getText().toString();
+        String radiusDescr = reminderRadiusEditText.getText().toString();
 
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();
