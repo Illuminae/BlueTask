@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "bluetask.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_REMINDERS = "reminders";
     public static final String TABLE_REMINDERPOSITIONS = "rem_pos";
@@ -26,34 +26,28 @@ public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
     public static final String REMINDERPOSITIONS_COLUMN_POS_ID = "pos_id";
     public static final String POSITIONS_COLUMN_POS_ID = "pos_id";
     public static final String POSITIONS_COLUMN_POS_TITLE = "pos_title";
-    public static final String POSITIONS_COLUMN_STREET = "street";
-    public static final String POSITIONS_COLUMN_STR_NUM = "str_num";
-    public static final String POSITIONS_COLUMN_ZIP = "zip";
-    public static final String POSITIONS_COLUMN_CITY = "city";
+    public static final String POSITIONS_COLUMN_RADIUS = "radius";
     public static final String POSITIONS_COLUMN_GEO_DATA = "geo_data";
 
-    private static final String DATABASE_CREATE =
+    private static final String CREATE_TABLE_REMINDERS =
             "CREATE TABLE " + TABLE_REMINDERS + "("
                 + REMINDERS_COLUMN_REM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + REMINDERS_COLUMN_NAME + " TEXT NOT NULL, "
                 + REMINDERS_COLUMN_DESCR + " TEXT NOT NULL, "
                 + REMINDERS_COLUMN_DATE + " INTEGER NOT NULL, "
                 + REMINDERS_COLUMN_DONE + " INTEGER NOT NULL"
-                + "); "
-                +
+                + ");";
+    private static final String CREATE_TABLE_POSITIONS =
             "CREATE TABLE " + TABLE_POSITIONS + "("
                 + POSITIONS_COLUMN_POS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + POSITIONS_COLUMN_POS_TITLE + " TEXT NOT NULL, "
-                + POSITIONS_COLUMN_CITY + " TEXT, "
-                + POSITIONS_COLUMN_ZIP + "INTEGER, "
-                + POSITIONS_COLUMN_STREET + " TEXT, "
-                + POSITIONS_COLUMN_STR_NUM + " TEXT, "
+                + POSITIONS_COLUMN_RADIUS + " INTEGER, "
                 + POSITIONS_COLUMN_GEO_DATA + " TEXT NOT NULL"
-                + "); "
-                +
+                + ");";
+    private static final String CREATE_TABLE_REMINDERPOSITIONS =
             "CREATE TABLE " + TABLE_REMINDERPOSITIONS + "("
-                + REMINDERPOSITIONS_COLUMN_REM_ID + "INTEGER, "
-                + REMINDERPOSITIONS_COLUMN_POS_ID + "INTEGER, "
+                + REMINDERPOSITIONS_COLUMN_REM_ID + " INTEGER, "
+                + REMINDERPOSITIONS_COLUMN_POS_ID + " INTEGER, "
                 + "FOREIGN KEY (" + REMINDERPOSITIONS_COLUMN_REM_ID + ") REFERENCES " + TABLE_REMINDERS + "(" + REMINDERS_COLUMN_REM_ID + "), "
                 + "FOREIGN KEY (" + REMINDERPOSITIONS_COLUMN_POS_ID + ") REFERENCES " + TABLE_POSITIONS + "(" + POSITIONS_COLUMN_POS_ID + "), "
                 + "PRIMARY KEY (" + REMINDERPOSITIONS_COLUMN_REM_ID + ", " + REMINDERPOSITIONS_COLUMN_POS_ID + ")"
@@ -65,12 +59,16 @@ public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase database){
-        database.execSQL(DATABASE_CREATE);
+        database.execSQL(CREATE_TABLE_REMINDERS);
+        database.execSQL(CREATE_TABLE_POSITIONS);
+        database.execSQL(CREATE_TABLE_REMINDERPOSITIONS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERPOSITIONS + ", " + TABLE_POSITIONS + ", " + TABLE_REMINDERS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERPOSITIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_POSITIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS);
         onCreate(db);
     }
 
