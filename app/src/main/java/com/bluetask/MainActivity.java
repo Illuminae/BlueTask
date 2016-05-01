@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.bluetask/http/host/path")
-        );
+           );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
