@@ -1,8 +1,12 @@
 package com.bluetask;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +25,7 @@ import java.util.List;
 public class AddReminderActivity extends AppCompatActivity{
 
     private BlueTaskDataSource dataSource;
+    private String m_Text = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,7 @@ public class AddReminderActivity extends AppCompatActivity{
 
         Button btnSave = (Button) findViewById(R.id.add_btn_save);
         Button btnCancel = (Button) findViewById(R.id.add_btn_cancel);
+        Button btnAddLocation = (Button) findViewById(R.id.add_btn_addLocation);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,13 +60,63 @@ public class AddReminderActivity extends AppCompatActivity{
             }
         });
 
-        //populate location when started from MapsActivity
-        String text = (String) getIntent().getStringExtra("point");
-        TextView editText = (TextView) findViewById(R.id.add_location_description);
-        editText.setText(text);
-
+        btnAddLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                intent.putExtra("activity","map");
+                startActivityForResult(intent,100);
+            }
+        });
+        receiveLocation(getIntent().getStringExtra("point"));
     }
 
+    private void receiveLocation(String location){
+        if (location != null) {
+            getLocDescription();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode, Intent data) {
+        if(resultCode == 100){
+            receiveLocation((String)data.getExtras().get("point"));
+        }
+    }
+
+    private void getLocDescription(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Title");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m_Text = input.getText().toString();
+                TextView editText = (TextView) findViewById(R.id.add_location_description);
+                String text = (String) editText.getText();
+                if (text.equals("-")) {
+                    text = m_Text;
+                } else {
+                    text = text +", "+ m_Text;
+                }
+                editText.setText(text);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
     private void finishWithResult(int resultCode)  {
         setResult(resultCode);
         super.onBackPressed();
