@@ -30,6 +30,10 @@ import java.util.List;
 import static com.bluetask.R.id.ToDoList;
 import static com.bluetask.R.id.distance;
 
+import android.os.Vibrator;
+import android.content.Context;
+
+
 public class MainActivity extends AppCompatActivity {
 
     public final static int REQUEST_ADD_REMINDER = 0;
@@ -75,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        // start Notification Service
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
     }
 
     @Override
@@ -133,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_switch_maps) {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
-            finish();
             return true;
         }
 
