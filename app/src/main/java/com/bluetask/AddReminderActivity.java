@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
@@ -32,7 +34,7 @@ public class AddReminderActivity extends AppCompatActivity{
         dataSource.open();
 
         Button btnSave = (Button) findViewById(R.id.add_btn_save);
-        Button btnCancel = (Button) findViewById(R.id.add_button_cancel);
+        Button btnCancel = (Button) findViewById(R.id.add_btn_cancel);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,6 +53,12 @@ public class AddReminderActivity extends AppCompatActivity{
                 finishWithResult(MainActivity.RESULT_CANCEL);
             }
         });
+
+        //populate location when started from MapsActivity
+        String text = (String) getIntent().getStringExtra("point");
+        TextView editText = (TextView) findViewById(R.id.add_location_description);
+        editText.setText(text);
+
     }
 
     private void finishWithResult(int resultCode)  {
@@ -66,12 +74,30 @@ public class AddReminderActivity extends AppCompatActivity{
         EditText reminderDescrEditText = (EditText) findViewById(R.id.add_edittext_description);
         String reminderDescr = reminderDescrEditText.getText().toString();
 
+        TextView reminderLocationEditText = (TextView) findViewById((R.id.add_location_description));
+        String locationCoordinates = reminderLocationEditText.getText().toString();
+
+        EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
+        String radiusDescr = reminderRadiusEditText.getText().toString();
+
         if (reminderTitle.length() > 0){
             List<Position> remPositions = new ArrayList<>();
-            //For testing purposes I am creating a fake position as adding Positions is not yet
-            // possible in the AddReminder view
-            Position testPosition = new Position("Zu Hause", "Mannheim",68159, "Holzstr.", "9", "49.494743, 8.463979");
-            remPositions.add(testPosition);
+            // Get Radius from Edittext field and convert to int
+            int radius;
+            if (radiusDescr.length() == 0) {
+                //Default radius 400m if no value was given
+                radius = 400;
+            } else {
+                radius = Integer.parseInt(radiusDescr);
+            }
+            //TODO: Check if multiple locations are given!
+            //For now check is done if Position empty, otherwise Position object is instantiated.
+            if (locationCoordinates.length() != 0) {
+                Position newPosition = new Position(reminderTitle, radius, locationCoordinates);
+                remPositions.add(newPosition);
+            }
+
+
             int time = (int) System.currentTimeMillis() % Integer.MAX_VALUE;
             Reminder newReminder = new Reminder(reminderTitle, reminderDescr, time, false, remPositions);
             dataSource.createReminder(newReminder);

@@ -1,22 +1,25 @@
 package com.bluetask;
 
+import android.Manifest;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.widget.Toast;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap mMap;
 
     @Override
@@ -26,12 +29,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -56,6 +59,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return super.onOptionsItemSelected(item);
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -68,11 +72,41 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            Toast.makeText(getApplicationContext(), "ACCESS_FINE_LOCATION not granted!", Toast.LENGTH_SHORT).show();
+        }
+        /*
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            public void onMyLocationChange (Location location){
+                mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("It's Me!"));
+            }
+        });
+        */
 
-        // Add a marker in Sydney and move the camera
-        LatLng mannheim = new LatLng(49.4889,8.4692);
-        mMap.addMarker(new MarkerOptions().position(mannheim).title("Marker in Mannheim"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(mannheim));
+        // zoom in on map
+        CameraPosition camPos = new CameraPosition.Builder()
+                    .target(new LatLng(49.487765, 8.466285))
+                    .zoom(14)
+                    .tilt(0)
+                    .build();
+        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+        mMap.moveCamera(camUpd3);
+
+    }
+
+
+    @Override
+    public void onMapLongClick(LatLng point) {
+        String text = point.toString();
+        Intent intent = new Intent(MapsActivity.this, AddReminderActivity.class);
+        intent.putExtra("point", text);
+        startActivity(intent);
+        finish();
+
     }
 
 }
