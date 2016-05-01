@@ -24,6 +24,15 @@ android:focusableInTouchMode="true">
         android:focusable="false"
         android:fontFamily="Arial" />
 
+    <TextView
+        android:id="@+id/rem_ID"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="remID"
+        android:layout_column="5" />
+
     <ImageButton
         android:id="@+id/blue_Button"
         android:layout_width="wrap_content"

@@ -41,11 +41,13 @@ public class RemListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         // Find fields to populate in inflated template
+        TextView remID = (TextView) view.findViewById(R.id.rem_ID);
         TextView remName = (TextView) view.findViewById(R.id.name);
         TextView remDescr = (TextView) view.findViewById(R.id.description);
         TextView remDistance = (TextView) view.findViewById(R.id.distance);
 
         // Extract properties from cursor
+        int id = cursor.getInt(cursor.getColumnIndex("_id"));
         int distance = cursor.getInt(cursor.getColumnIndex("_id"));
         String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
         String description = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
@@ -55,9 +57,10 @@ public class RemListAdapter extends CursorAdapter {
                 for(Position : List){
                 distance = geo_data
                 }
-*/
+        */
 
         // Populate fields with extracted properties
+        remID.setText(String.valueOf(id));
         remName.setText(name);
         remDescr.setText(description);
         remDistance.setText(String.valueOf(distance));
