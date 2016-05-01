@@ -1,5 +1,6 @@
 package com.bluetask;
 
+import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 
@@ -19,10 +22,13 @@ import com.bluetask.database.Reminder;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class RemListAdapter extends CursorAdapter {
     public RemListAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
+    public ImageButton BluetoothBn;
+    public ArrayAdapter<String> BTadapter;
 
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
@@ -50,9 +56,11 @@ public class RemListAdapter extends CursorAdapter {
         remDescr.setText(description);
         //remDistance.setText(String.valueOf(distance));
     }
-
-
+public void myClickHandler (View v) {
+    LinearLayout vwParentRow = (LinearLayout) v.getParent();
+    TextView name = (TextView) vwParentRow.getChildAt(1);
 }
+
 
 
 

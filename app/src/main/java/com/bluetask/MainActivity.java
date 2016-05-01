@@ -1,6 +1,9 @@
 package com.bluetask;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,11 +12,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -26,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.bluetask.R.id.ToDoList;
 import static com.bluetask.R.id.distance;
@@ -35,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
+    public Set<BluetoothDevice> pairedDevices;
+    public ArrayAdapter<String> BTadapter;
+    public ListView myListView;
+
 
     //the database (copied from serieslist example)
     private BlueTaskDataSource mDB;
@@ -251,10 +261,28 @@ public class MainActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
-
-
-
     }
+
+    private void getBluetoothDialog() {
+
+        BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.bluetooth_list, null);
+        builder.setView(convertView);
+        builder.setTitle("Paired Devices");
+        myListView = (ListView) convertView.findViewById(R.id.listView1);
+        BTadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        pairedDevices = myBluetoothAdapter.getBondedDevices();
+        // put it's one to the adapter
+        for (BluetoothDevice device : pairedDevices){
+            BTadapter.add(device.getName() + "\n" + device.getAddress());
+        }
+        myListView.setAdapter(BTadapter);
+        builder.show();
+    }
+
+
 
     }
 

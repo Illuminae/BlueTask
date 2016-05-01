@@ -27,7 +27,8 @@ android:focusableInTouchMode="true">
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_column="16"
-        android:src="@drawable/bluetooth_icon" />
+        android:src="@drawable/bluetooth_icon"
+        android:onClick="myClickHandler"/>
 
 </TableRow>
 
