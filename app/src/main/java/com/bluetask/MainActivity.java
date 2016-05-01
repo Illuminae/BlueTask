@@ -3,6 +3,7 @@ package com.bluetask;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import com.bluetask.database.BlueTaskDataSource;
+import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -51,15 +53,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //initializes and opens the database (copied from serieslist example)
+     /*   //initializes and opens the database (copied from serieslist example)
         mDB = new BlueTaskDataSource(this);
-        mDB.open();
+        mDB.open();*/
 
-        //registers the list view for the context menu (copied from serieslist example)
+  /*      //registers the list view for the context menu (copied from serieslist example)
         ListView listView = (ListView) findViewById(ToDoList);
-        RemListAdapter remListAdapter = new RemListAdapter(getApplicationContext(),R.layout.list_item);
-        listView.setAdapter(remListAdapter);
-        registerForContextMenu(listView);
+        List remListAdapter = new List(getApplicationContext(),R.layout.list_item);
+        listView.setAdapter(RemListAdapter);
+        registerForContextMenu(listView);*/
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         client.connect();
 
         //Updates the displayed list when the Activity becomes visible
-        // TODO write updateList()
         updateList();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -112,7 +113,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         //close the database when the activity is destroyed
-        mDB.close();
+        if (mDB != null) {
+            mDB.close();
+        }
     }
 
 
@@ -172,7 +175,29 @@ public class MainActivity extends AppCompatActivity {
      * Updates the list adapter and, thus, the UI element
      */
     private void updateList() {
-        //Get all reminders from the database
+
+        // BlueTaskSQLiteOpenHelper is a SQLiteOpenHelper class connecting to SQLite
+        BlueTaskSQLiteOpenHelper handler = new BlueTaskSQLiteOpenHelper(this);
+        // Get access to the underlying writeable database
+        SQLiteDatabase mDB = handler.getWritableDatabase();
+        // Query for items from the database and get a cursor back
+        Cursor todoCursor = mDB.rawQuery("SELECT " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID + " AS _id," +
+                BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME + ", " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR +
+                " FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
+
+
+        // Find ListView to populate
+        ListView remItems = (ListView) findViewById(ToDoList);
+        // Setup cursor adapter using cursor from last step
+        RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
+        // Attach cursor adapter to the ListView
+        remItems.setAdapter(todoAdapter);
+
+        // Switch to new cursor and update contents of ListView
+        //todoAdapter.changeCursor(newCursor);
+
+
+        /*//Get all reminders from the database
         List<Reminder> allReminders = mDB.getAllReminders();
 
         List<String> allNames = new ArrayList<>();
@@ -184,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         //update the adapter
         mAdapter = new ArrayAdapter<>(this, R.layout.list_item, allNames);
         ListView lv = (ListView) findViewById(ToDoList);
-        lv.setAdapter(mAdapter);
+        lv.setAdapter(mAdapter);*/
     }
 
 
@@ -228,34 +253,8 @@ public class MainActivity extends AppCompatActivity {
         client.disconnect();
 
 
-    // POPULATE??
-    private void populateToDoList() {
-        Cursor cursor = mDB.getAllReminders();
 
-        // Allow activity to manage lifetime of the cursor
-        //DEPRECATED!
-        startManagingCursor(cursor);
-
-        //Set up mapping from cursor to view fields:
-        String[] reminderNames = new String[]
-                {BlueTaskDataSource.REMINDER_COLUMN_NAME, BlueTaskDataSource.REMINDER_COLUMN_DESCR};
-        int[] toViewName = new int[]
-        {R.id.name};
-
-        //Create Adapter to match columns of the DB onto elements in the UI
-        SimpleCursorAdapter BlueTaskDataSource =
-                new SimpleCursorAdapter(
-                    this, // Context
-                    R.layout.list_item, // Row Layout template
-                    cursor,             // Cursor
-                    reminderNames,      // DB Column names
-                    toViewName,         // View Names to put information in
-                );
-
-        // Set adapter for list view
-        ListView lv = (ListView) findViewById(R.id.ToDoList);
-        myList.setAdapter(RemListAdapter)
     }
-*/
+
     }
-}
+
