@@ -26,6 +26,9 @@ public class AddReminderActivity extends AppCompatActivity{
 
     private BlueTaskDataSource dataSource;
     private String m_Text = "";
+    private String location = "";
+    private List<LocationPair> list = new ArrayList<LocationPair>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,7 @@ public class AddReminderActivity extends AppCompatActivity{
     }
 
     private void receiveLocation(String location){
+        this.location=location;
         if (location != null) {
             getLocDescription();
         }
@@ -86,7 +90,7 @@ public class AddReminderActivity extends AppCompatActivity{
 
     private void getLocDescription(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        builder.setTitle("Give location name");
 
         // Set up the input
         final EditText input = new EditText(this);
@@ -107,6 +111,8 @@ public class AddReminderActivity extends AppCompatActivity{
                     text = text +", "+ m_Text;
                 }
                 editText.setText(text);
+                LocationPair pair = new LocationPair(m_Text,location);
+                list.add(pair);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -130,9 +136,6 @@ public class AddReminderActivity extends AppCompatActivity{
         EditText reminderDescrEditText = (EditText) findViewById(R.id.add_edittext_description);
         String reminderDescr = reminderDescrEditText.getText().toString();
 
-        TextView reminderLocationEditText = (TextView) findViewById((R.id.add_location_description));
-        String locationCoordinates = reminderLocationEditText.getText().toString();
-
         EditText reminderRadiusEditText = (EditText) findViewById((R.id.add_edittext_radius));
         String radiusDescr = reminderRadiusEditText.getText().toString();
 
@@ -148,9 +151,12 @@ public class AddReminderActivity extends AppCompatActivity{
             }
             //TODO: Check if multiple locations are given!
             //For now check is done if Position empty, otherwise Position object is instantiated.
-            if (locationCoordinates.length() != 0) {
-                Position newPosition = new Position(reminderTitle, radius, locationCoordinates);
-                remPositions.add(newPosition);
+            if (list.size() != 0) {
+                for (LocationPair pair : list) {
+                    Position newPosition = new Position(pair.getLocDesc(), radius, pair.getLocCoords());
+                    remPositions.add(newPosition);
+                }
+
             }
 
 
@@ -171,3 +177,4 @@ public class AddReminderActivity extends AppCompatActivity{
         dataSource.close();
     }
 }
+
