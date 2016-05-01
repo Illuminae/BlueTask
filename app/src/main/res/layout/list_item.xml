@@ -20,7 +20,9 @@ android:focusableInTouchMode="true">
         android:layout_gravity="bottom"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        android:focusable="false"
+        android:fontFamily="Arial" />
 
     <ImageButton
         android:id="@+id/blue_Button"
