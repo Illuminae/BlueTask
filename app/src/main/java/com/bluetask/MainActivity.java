@@ -1,20 +1,30 @@
 package com.bluetask;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
+import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
+import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -22,14 +32,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.bluetask.R.id.ToDoList;
+import static com.bluetask.R.id.distance;
 
 public class MainActivity extends AppCompatActivity {
 
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
+    public Set<BluetoothDevice> pairedDevices;
+    public ArrayAdapter<String> BTadapter;
+    public ListView myListView;
+
 
     //the database (copied from serieslist example)
     private BlueTaskDataSource mDB;
@@ -48,13 +64,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //initializes and opens the database (copied from serieslist example)
+     /*   //initializes and opens the database (copied from serieslist example)
         mDB = new BlueTaskDataSource(this);
-        mDB.open();
+        mDB.open();*/
 
-        //registers the list view for the context menu (copied from serieslist example)
+  /*      //registers the list view for the context menu (copied from serieslist example)
         ListView listView = (ListView) findViewById(ToDoList);
-        registerForContextMenu(listView);
+        List remListAdapter = new List(getApplicationContext(),R.layout.list_item);
+        listView.setAdapter(RemListAdapter);
+        registerForContextMenu(listView);*/
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        startBluetoothServer();
     }
 
     @Override
@@ -85,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         client.connect();
 
         //Updates the displayed list when the Activity becomes visible
-        // TODO write updateList()
         updateList();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -107,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         //close the database when the activity is destroyed
-        mDB.close();
+        if (mDB != null) {
+            mDB.close();
+        }
     }
 
 
@@ -166,7 +187,29 @@ public class MainActivity extends AppCompatActivity {
      * Updates the list adapter and, thus, the UI element
      */
     private void updateList() {
-        //Get all reminders from the database
+
+        // BlueTaskSQLiteOpenHelper is a SQLiteOpenHelper class connecting to SQLite
+        BlueTaskSQLiteOpenHelper handler = new BlueTaskSQLiteOpenHelper(this);
+        // Get access to the underlying writeable database
+        SQLiteDatabase mDB = handler.getWritableDatabase();
+        // Query for items from the database and get a cursor back
+        Cursor todoCursor = mDB.rawQuery("SELECT " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID + " AS _id," +
+                BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME + ", " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR +
+                " FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
+
+
+        // Find ListView to populate
+        ListView remItems = (ListView) findViewById(ToDoList);
+        // Setup cursor adapter using cursor from last step
+        RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
+        // Attach cursor adapter to the ListView
+        remItems.setAdapter(todoAdapter);
+
+        // Switch to new cursor and update contents of ListView
+        //todoAdapter.changeCursor(newCursor);
+
+
+        /*//Get all reminders from the database
         List<Reminder> allReminders = mDB.getAllReminders();
 
         List<String> allNames = new ArrayList<>();
@@ -176,9 +219,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //update the adapter
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allNames);
+        mAdapter = new ArrayAdapter<>(this, R.layout.list_item, allNames);
         ListView lv = (ListView) findViewById(ToDoList);
-        lv.setAdapter(mAdapter);
+        lv.setAdapter(mAdapter);*/
     }
 
 
@@ -221,4 +264,31 @@ public class MainActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
-}
+
+    private void getBluetoothDialog() {
+
+        BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View convertView = (View) inflater.inflate(R.layout.bluetooth_list, null);
+        builder.setView(convertView);
+        builder.setTitle("Paired Devices");
+        myListView = (ListView) convertView.findViewById(R.id.listView1);
+        BTadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        pairedDevices = myBluetoothAdapter.getBondedDevices();
+        // put it's one to the adapter
+        for (BluetoothDevice device : pairedDevices){
+            BTadapter.add(device.getName() + "\n" + device.getAddress());
+        }
+        myListView.setAdapter(BTadapter);
+        builder.show();
+    }
+
+    private void startBluetoothServer(){
+        Thread btThread = new AcceptThread();
+        btThread.start();
+    }
+
+
+    }
+
