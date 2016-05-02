@@ -102,6 +102,41 @@ public class BlueTaskDataSource {
 
     }
 
+    public Reminder getReminderById(int id_query){
+
+        // Select * FROM TABLE reminders
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
+                + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID + " = " + id_query + ";", null);
+
+        Reminder result = null;
+        boolean next = cursor.moveToFirst();
+        while(next){
+            int id = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID);
+            String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
+            String descr = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
+            int date = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE);
+            boolean done;
+
+            // Simplified if-statement
+            done = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE) == 1;
+            //TO DO: Write and Query function that gets all Positions for the Reminder and adds it to the constructor call
+
+
+            if(getPositionsForReminder(id) != null) {
+                List<Position> reminderPositions = getPositionsForReminder(id);
+                result = new Reminder(id, name, descr, date, done, reminderPositions);
+            } else {
+                List<Position> reminderPositions = null;
+                result = new Reminder(id, name, descr, date, done, reminderPositions);
+            }
+
+            next = cursor.moveToNext();
+        }
+
+        return result;
+
+    }
+
     public List<Position> getPositionsForReminder(int rem_id){
 
         // SELECT * FROM TABLE TABLE positions JOIN TABLE REMINDERPOSITIONS WHERE REM_ID = X
