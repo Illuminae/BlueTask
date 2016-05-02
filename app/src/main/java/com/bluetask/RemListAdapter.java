@@ -88,8 +88,11 @@ public class RemListAdapter extends CursorAdapter {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String chosenAdapter = BTadapter.getItem(position);
-                Log.d("MAC ADD", chosenAdapter);
-                BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(chosenAdapter);
+                String[] chosenAdapterLines = chosenAdapter.split("\n");
+                String adapterAddress = chosenAdapterLines[1];
+                Log.d("MAC ADD + Name", chosenAdapter);
+                Log.d("MAC ONLY", adapterAddress);
+                BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(adapterAddress);
                 //TODO: Pass on to ConnectedThread
                 UUID DEFAULT_UUID = UUID.randomUUID();
 
