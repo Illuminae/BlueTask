@@ -2,8 +2,6 @@ package com.bluetask.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Looper;
-import android.os.Message;
-import android.provider.SyncStateContract;
 import android.os.Handler;
 
 import com.bluetask.database.Reminder;

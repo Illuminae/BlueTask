@@ -3,32 +3,19 @@ package com.bluetask;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
-
-import com.bluetask.bluetooth.ConnectedThread;
-import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
-import com.bluetask.database.Reminder;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 
