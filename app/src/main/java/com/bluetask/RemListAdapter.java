@@ -3,6 +3,7 @@ package com.bluetask;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -15,8 +16,11 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
+import com.bluetask.bluetooth.ConnectThread;
+import com.bluetask.bluetooth.ConnectedThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import java.util.Set;
+import java.util.UUID;
 
 
 public class RemListAdapter extends CursorAdapter {
@@ -58,27 +62,23 @@ public class RemListAdapter extends CursorAdapter {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBluetoothDialog(context);
+                getBluetoothDialog(context, remId);
             }
 
         });
     }
 
-    public void myClickHandler(View v){
-
-    }
-
-    private void getBluetoothDialog(Context c) {
-
-        BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        AlertDialog.Builder builder = new AlertDialog.Builder(c);
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View convertView = (View) inflater.inflate(R.layout.bluetooth_list, null);
+    private void getBluetoothDialog(Context c, final int reminderId) {
+        final Context context = c;
+        final BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View convertView = inflater.inflate(R.layout.bluetooth_list, null);
         builder.setView(convertView);
         builder.setTitle("Paired Devices");
         ListView myListView = (ListView) convertView.findViewById(R.id.listView1);
-        BTadapter = new ArrayAdapter<String>(c, android.R.layout.simple_list_item_1);
-        Set<BluetoothDevice> pairedDevices = myBluetoothAdapter.getBondedDevices();
+        BTadapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
+        final Set<BluetoothDevice> pairedDevices = myBluetoothAdapter.getBondedDevices();
         // put each one to the adapter
         for (BluetoothDevice device : pairedDevices){
             BTadapter.add(device.getName() + "\n" + device.getAddress());
@@ -89,8 +89,17 @@ public class RemListAdapter extends CursorAdapter {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String chosenAdapter = BTadapter.getItem(position);
                 Log.d("MAC ADD", chosenAdapter);
+                BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(chosenAdapter);
                 //TODO: Pass on to ConnectedThread
-            }
+                UUID DEFAULT_UUID = UUID.randomUUID();
+
+                ConnectThread t = new ConnectThread(device, context, reminderId);
+                t.start();
+                //BluetoothSocket mSocket = device.createInsecureRfcommSocketToServiceRecord(DEFAULT_UUID);
+                //ConnectedThread sendThread = new ConnectedThread(mSocket,context);
+                //sendThread.start();
+                //sendThread.write(reminderId);
+                }
         });
         builder.show();
 

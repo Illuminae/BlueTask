@@ -3,6 +3,7 @@ package com.bluetask.bluetooth;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -10,14 +11,19 @@ import java.util.UUID;
 public class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
-    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private UUID DEFAULT_UUID = UUID.randomUUID();
+    private Context context;
+    private int reminderId;
 
-    public ConnectThread(BluetoothDevice device) {
+
+    public ConnectThread(BluetoothDevice device, Context c, int remId) {
         // Use a temporary object that is later assigned to mmSocket,
         // because mmSocket is final
         BluetoothSocket tmp = null;
         mmDevice = device;
+        context = c;
+        reminderId = remId;
 
         // Get a BluetoothSocket to connect with the given BluetoothDevice
         try {
@@ -43,12 +49,9 @@ public class ConnectThread extends Thread {
             return;
         }
 
-        // Do work to manage the connection (in a separate thread)
-
-        //'TODO send Reminder via ObjectOutputStream
-        ConnectedThread manageConnectedSocket = new ConnectedThread(mmSocket);
-        byte[] asdf = new byte[5];
-        manageConnectedSocket.write(asdf);
+        ConnectedThread writeSocket = new ConnectedThread(mmSocket, context);
+        writeSocket.start();
+        writeSocket.write(reminderId);
         //manageConnectedSocket(mmSocket);
     }
 

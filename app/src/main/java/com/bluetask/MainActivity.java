@@ -1,5 +1,6 @@
 package com.bluetask;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -250,7 +251,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void startBluetoothServer(){
-        Thread btThread = new AcceptThread();
+        Context c = getApplicationContext();
+        Thread btThread = new AcceptThread(c);
         btThread.start();
     }
 
