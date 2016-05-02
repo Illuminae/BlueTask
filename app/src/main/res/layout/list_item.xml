@@ -20,13 +20,24 @@ android:focusableInTouchMode="true">
         android:layout_gravity="bottom"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"
-        android:textSize="16dp" />
+        android:textSize="16dp"
+        android:focusable="false"
+        android:fontFamily="Arial" />
+
+    <TextView
+        android:id="@+id/rem_ID"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="remID"
+        android:layout_column="6" />
 
     <ImageButton
         android:id="@+id/blue_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_column="16"
+        android:layout_column="17"
         android:src="@drawable/bluetooth_icon" />
 </TableRow>
 
@@ -44,7 +55,7 @@ android:focusableInTouchMode="true">
         android:gravity="top"
         android:textSize="13dp" />
 
-    <TextView android:layout_height="wrap_content"
+        <TextView android:layout_height="wrap_content"
         android:layout_width="10sp"
         android:layout_weight="1"
         android:textColor="#000000"
@@ -53,14 +64,15 @@ android:focusableInTouchMode="true">
         android:text="XXX Meter"
         android:height="40sp"
         android:paddingRight="25dp"
-        android:textSize="11dp" />
+        android:textSize="11dp"
+        android:layout_column="2" />
 
-    <CheckBox
+        <CheckBox
         android:layout_width="50sp"
         android:layout_height="40sp"
         android:text=""
         android:id="@+id/checkBox"
-        android:layout_column="16"
+        android:layout_column="17"
         android:nestedScrollingEnabled="false" />
 
 </TableRow>

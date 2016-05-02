@@ -70,7 +70,7 @@ public class BlueTaskDataSource {
     public List<Reminder> getAllReminders(){
 
         // Select * FROM TABLE reminders
-        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
+        Cursor cursor = mDB.rawQuery(" SELECT *FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
                 + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE + " = 0;", null);
 
         List<Reminder> allReminders = new ArrayList<>();

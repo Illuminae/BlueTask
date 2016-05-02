@@ -23,6 +23,10 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import static com.bluetask.R.id.ToDoList;
 
+import android.os.Vibrator;
+import android.content.Context;
+
+
 public class MainActivity extends AppCompatActivity {
 
     public final static int REQUEST_ADD_REMINDER = 0;
@@ -69,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-
+        // start Notification Service
+        Intent intent = new Intent(this, NotificationService.class);
+        startService(intent);
         startBluetoothServer();
     }
 
@@ -166,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         updateList();
     }
 */
-    /**TODO: Does this implement updateList?
+    /*
      * Updates the list adapter and, thus, the UI element
      */
     private void updateList() {
@@ -191,20 +197,6 @@ public class MainActivity extends AppCompatActivity {
         // Switch to new cursor and update contents of ListView
         //todoAdapter.changeCursor(newCursor);
 
-
-        /*//Get all reminders from the database
-        List<Reminder> allReminders = mDB.getAllReminders();
-
-        List<String> allNames = new ArrayList<>();
-
-        for (Reminder r: allReminders) {
-            allNames.add(r.getName());
-        }
-
-        //update the adapter
-        mAdapter = new ArrayAdapter<>(this, R.layout.list_item, allNames);
-        ListView lv = (ListView) findViewById(ToDoList);
-        lv.setAdapter(mAdapter);*/
     }
 
 
@@ -220,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_SAVE) {
                 //our new reminder was stored to the database
                 //thus we need to update our list
-                //TODO: uncomment once updateList has been implemented
                 updateList();
             } else if (resultCode == RESULT_CANCEL) {
                 //nothing happened, we don't need to do anything

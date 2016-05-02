@@ -18,9 +18,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Objects;
+
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap mMap;
+    private String pActivity="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        Intent intent = getIntent();
+        pActivity = intent.getStringExtra("activity");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -104,7 +108,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         String text = point.toString();
         Intent intent = new Intent(MapsActivity.this, AddReminderActivity.class);
         intent.putExtra("point", text);
-        startActivity(intent);
+        if (Objects.equals(pActivity, new String("map"))){
+            setResult(100, intent);
+            super.onBackPressed();
+        } else {
+            startActivity(intent);
+        }
         finish();
 
     }
