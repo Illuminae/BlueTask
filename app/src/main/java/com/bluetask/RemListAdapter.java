@@ -1,5 +1,7 @@
 package com.bluetask;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,19 +16,23 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
+import com.bluetask.bluetooth.ConnectedThread;
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class RemListAdapter extends CursorAdapter {
     public RemListAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
+
     public ImageButton BluetoothBn;
     public ArrayAdapter<String> BTadapter;
 
@@ -56,9 +62,23 @@ public class RemListAdapter extends CursorAdapter {
         remDescr.setText(description);
         //remDistance.setText(String.valueOf(distance));
     }
-public void myClickHandler (View v) {
-    LinearLayout vwParentRow = (LinearLayout) v.getParent();
-    TextView name = (TextView) vwParentRow.getChildAt(1);
+
+    public void myClickHandler(View v, Context context){
+        Toast t = new Toast(context);
+        t.setText("it's working");
+        t.show();
+    }
+/*    public void myClickHandler(View v, Context context) {
+        LinearLayout vwParentRow = (LinearLayout) v.getParent();
+        TextView name = (TextView) vwParentRow.getChildAt(1);
+        BlueTaskDataSource mDB = new BlueTaskDataSource(context);
+        List<Reminder> r = new ArrayList<>();
+        r = mDB.getAllReminders();
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        BluetoothDevice recipient = new BluetoothDevice();
+        Thread sendThread = new ConnectedThread();
+    }*/
 }
 
 

@@ -11,7 +11,7 @@ public class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
     private BluetoothAdapter mBluetoothAdapter;
-    private UUID DEFAULT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    private UUID DEFAULT_UUID = UUID.randomUUID();
 
     public ConnectThread(BluetoothDevice device) {
         // Use a temporary object that is later assigned to mmSocket,
@@ -44,7 +44,10 @@ public class ConnectThread extends Thread {
         }
 
         // Do work to manage the connection (in a separate thread)
-        manageConnectedSocket(mmSocket);
+        ConnectedThread manageConnectedSocket = new ConnectedThread(mmSocket);
+        byte[] asdf = new byte[5];
+        manageConnectedSocket.write(asdf);
+        //manageConnectedSocket(mmSocket);
     }
 
     /** Will cancel an in-progress connection, and close the socket */

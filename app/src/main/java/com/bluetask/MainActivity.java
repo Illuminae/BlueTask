@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        startBluetoothServer();
     }
 
     @Override
@@ -282,6 +285,10 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void startBluetoothServer(){
+        Thread btThread = new AcceptThread();
+        btThread.start();
+    }
 
 
     }

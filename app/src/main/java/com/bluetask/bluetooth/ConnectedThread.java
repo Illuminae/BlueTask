@@ -1,24 +1,23 @@
 package com.bluetask.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.SyncStateContract;
+import android.os.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.logging.Handler;
 
 public class ConnectedThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
-    private final Handler mHandler;
 
 
-    public ConnectedThread(BluetoothSocket socket, Handler mHandler) {
+    public ConnectedThread(BluetoothSocket socket) {
         mmSocket = socket;
-        this.mHandler = mHandler;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
 
@@ -36,10 +35,12 @@ public class ConnectedThread extends Thread {
     public void run() {
         byte[] buffer = new byte[1024];  // buffer store for the stream
         int bytes; // bytes returned from read()
+        Handler mHandler = new Handler(Looper.getMainLooper());
 
         // Keep listening to the InputStream until an exception occurs
         while (true) {
             try {
+                int MESSAGE_READ = 2;
                 // Read from the InputStream
                 bytes = mmInStream.read(buffer);
                 // Send the obtained bytes to the UI activity
