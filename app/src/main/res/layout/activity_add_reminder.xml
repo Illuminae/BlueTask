@@ -18,7 +18,8 @@
         android:layout_margin="8dp"
         android:id="@+id/add_text_name"
         android:layout_below="@id/add_toolbar"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -40,7 +41,8 @@
         android:layout_margin="8dp"
         android:id="@+id/add_text_description"
         android:layout_below="@id/add_edittext_title"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -62,7 +64,8 @@
         android:layout_margin="8dp"
         android:id="@+id/add_location"
         android:layout_below="@id/add_edittext_description"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
