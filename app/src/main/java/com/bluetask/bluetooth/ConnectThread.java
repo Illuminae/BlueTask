@@ -44,6 +44,8 @@ public class ConnectThread extends Thread {
         }
 
         // Do work to manage the connection (in a separate thread)
+
+        //'TODO send Reminder via ObjectOutputStream
         ConnectedThread manageConnectedSocket = new ConnectedThread(mmSocket);
         byte[] asdf = new byte[5];
         manageConnectedSocket.write(asdf);

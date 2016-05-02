@@ -265,24 +265,7 @@ public class MainActivity extends AppCompatActivity {
         client.disconnect();
     }
 
-    private void getBluetoothDialog() {
 
-        BluetoothAdapter myBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.bluetooth_list, null);
-        builder.setView(convertView);
-        builder.setTitle("Paired Devices");
-        myListView = (ListView) convertView.findViewById(R.id.listView1);
-        BTadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        pairedDevices = myBluetoothAdapter.getBondedDevices();
-        // put it's one to the adapter
-        for (BluetoothDevice device : pairedDevices){
-            BTadapter.add(device.getName() + "\n" + device.getAddress());
-        }
-        myListView.setAdapter(BTadapter);
-        builder.show();
-    }
 
     private void startBluetoothServer(){
         Thread btThread = new AcceptThread();

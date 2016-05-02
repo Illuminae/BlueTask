@@ -6,8 +6,13 @@ import android.os.Message;
 import android.provider.SyncStateContract;
 import android.os.Handler;
 
+import com.bluetask.database.Reminder;
+
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 
 public class ConnectedThread extends Thread {
@@ -35,21 +40,27 @@ public class ConnectedThread extends Thread {
     public void run() {
         byte[] buffer = new byte[1024];  // buffer store for the stream
         int bytes; // bytes returned from read()
+        Reminder r;
         Handler mHandler = new Handler(Looper.getMainLooper());
 
         // Keep listening to the InputStream until an exception occurs
-        while (true) {
+
             try {
                 int MESSAGE_READ = 2;
+
+                ObjectInputStream dis = new ObjectInputStream(mmInStream);
                 // Read from the InputStream
-                bytes = mmInStream.read(buffer);
+                r = (Reminder) dis.readObject();
+
+                //TODO write to database
                 // Send the obtained bytes to the UI activity
-                mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
-                        .sendToTarget();
+                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
             } catch (IOException e) {
-                break;
+
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }
+
     }
 
     /* Call this from the main activity to send data to the remote device */
