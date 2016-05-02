@@ -5,4 +5,5 @@
     <string name="title_add_reminder">Add Reminder</string>
     <string name="action_switch_main">Switch to Main</string>
     <string name="action_switch_maps">Switch to Map</string>
+    <string name="google_app_id">712058416339</string>
 </resources>

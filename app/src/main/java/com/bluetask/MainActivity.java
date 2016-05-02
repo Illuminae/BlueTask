@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_switch_maps) {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
-            finish();
             return true;
         }
 
@@ -261,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.bluetask/http/host/path")
-        );
+           );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
