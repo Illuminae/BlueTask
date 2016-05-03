@@ -1,6 +1,6 @@
 package com.bluetask;
 
-import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,23 +12,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
+import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
-import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.bluetask.R.id.ToDoList;
-import static com.bluetask.R.id.distance;
 
 import android.os.Vibrator;
 import android.content.Context;
@@ -39,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
+
 
     //the database (copied from serieslist example)
     private BlueTaskDataSource mDB;
@@ -82,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         // start Notification Service
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);
+        startBluetoothServer();
     }
 
     @Override
@@ -239,13 +234,19 @@ public class MainActivity extends AppCompatActivity {
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.bluetask/http/host/path")
-        );
+           );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
-
-
-
     }
+
+
+
+    private void startBluetoothServer(){
+        Context c = getApplicationContext();
+        Thread btThread = new AcceptThread(c);
+        btThread.start();
+    }
+
 
     }
 
