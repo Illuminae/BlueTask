@@ -51,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-     /*   //initializes and opens the database (copied from serieslist example)
+        /*initializes and opens the database (copied from serieslist example)
         mDB = new BlueTaskDataSource(this);
         mDB.open();*/
 
-  /*      //registers the list view for the context menu (copied from serieslist example)
+        /*registers the list view for the context menu (copied from serieslist example)
         ListView listView = (ListView) findViewById(ToDoList);
         List remListAdapter = new List(getApplicationContext(),R.layout.list_item);
         listView.setAdapter(RemListAdapter);

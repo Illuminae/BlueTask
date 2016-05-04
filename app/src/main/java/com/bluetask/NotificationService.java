@@ -20,15 +20,10 @@ public class NotificationService extends Service implements LocationListener {
 
     private ServiceHandler mServiceHandler;
     private Looper mServiceLooper;
-    // FOR LOCATION PUPROSES
     protected LocationManager locationManager;
-    protected LocationListener locationListener;
     protected Context context;
-    TextView txtLat;
-    String lat;
-    String provider;
-    protected String latitude, longitude;
-    protected boolean gps_enabled, network_enabled;
+    protected double currentLat=0;
+    protected double currentLong=0;
 
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -40,37 +35,40 @@ public class NotificationService extends Service implements LocationListener {
             // Normally we would do some work here, like download a file.
             // For our sample, we just sleep for 5 seconds.
             Context context = getApplicationContext();
-            int count = 0;
-            while (count <= 5) {
-                Location loc1 = new Location("");
-                double lat1 = 49.486849;
-                loc1.setLatitude(lat1);
-                double lon1 = 8.465879;
-                loc1.setLongitude(lon1);
-                Location loc2 = new Location("");
-                double lat2 = 49.487323;
+            Location loc1 = new Location("");
+            Location loc2 = new Location("");
+            int count=0;
+            while (count<50) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                loc1.setLatitude(currentLat);
+                loc1.setLongitude(currentLong);
+                double lat2 = 49.482814;
                 loc2.setLatitude(lat2);
-                double lon2 = 8.464603;
+                double lon2 = 8.4630918;
                 loc2.setLongitude(lon2);
                 float distanceInMeters = loc1.distanceTo(loc2);
-
-                if (distanceInMeters <= 10000) {
+                if (distanceInMeters <= 100000) {
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(context)
                                     .setSmallIcon(R.drawable.notification_icon)
                                     .setContentTitle("Bluetask Alert")
-                                    .setContentText("REMINDER to GET BANANAS");
-// Creates an explicit intent for an Activity in your app
+                                    .setContentText("distance in meters: "+ Float.toString(distanceInMeters));
+                    // Creates an explicit intent for an Activity in your app
                     Intent resultIntent = new Intent(context, AddReminderActivity.class);
 
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
+                    // The stack builder object will contain an artificial back stack for the
+                    // started Activity.
+                    // This ensures that navigating backward from the Activity leads out of
+                    // your application to the Home screen.
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-// Adds the back stack for the Intent (but not the Intent itself)
+                    // Adds the back stack for the Intent (but not the Intent itself)
                     stackBuilder.addParentStack(AddReminderActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
+                    // Adds the Intent that starts the Activity to the top of the stack
                     stackBuilder.addNextIntent(resultIntent);
                     PendingIntent resultPendingIntent =
                             stackBuilder.getPendingIntent(
@@ -84,26 +82,12 @@ public class NotificationService extends Service implements LocationListener {
                     note.defaults |= Notification.DEFAULT_SOUND;
                     NotificationManager mNotificationManager =
                             (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
+                    // mId allows you to update the notification later on.
                     int mId = 0;
                     mNotificationManager.notify(mId, mBuilder.build());
-
-
-                    //    Toast.makeText(getApplicationContext(), "Is close to location", Toast.LENGTH_SHORT).show();
                 }
-
-                /*    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // Restore interrupt status.
-                    Thread.currentThread().interrupt();
-                }*/
-                count += 1;
-                //Toast.makeText(getApplicationContext(), "Looping Lui", Toast.LENGTH_SHORT).show();
+                //count+=1;
             }
-
-            //}
-            // Stop the service using the startId, so that we don't stop
-            // the service in the middle of handling another job
             stopSelf(msg.arg1);
         }
     }
@@ -121,40 +105,35 @@ public class NotificationService extends Service implements LocationListener {
         mServiceHandler = new ServiceHandler(mServiceLooper);
 
         //GET YOUR CURRENT LOCATION
-
-
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this,"permission not granted",Toast.LENGTH_SHORT).show();
+        } else {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         }
-        @Override
-        public void onLocationChanged(Location location) {
-            Toast.makeText(this,"Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude(),Toast.LENGTH_SHORT).show();
-        }
+    }
 
-        @Override
-        public void onProviderDisabled(String provider) {
-            Log.d("Latitude","disable");
-        }
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLat=location.getLatitude();
+        currentLong=location.getLongitude();
+        Toast.makeText(this,Double.toString(currentLat),Toast.LENGTH_SHORT).show();
+    }
 
-        @Override
-        public void onProviderEnabled(String provider) {
-            Log.d("Latitude","enable");
-        }
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d("Latitude","disable");
+    }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.d("Latitude","status");
-        }
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d("Latitude","enable");
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d("Latitude","status");
+    }
 
 
 
@@ -163,55 +142,18 @@ public class NotificationService extends Service implements LocationListener {
         Message msg = mServiceHandler.obtainMessage();
         msg.arg1 = startId;
         mServiceHandler.sendMessage(msg);
-
+        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // We don't provide binding, so return null
         return null;
     }
 
     @Override
     public void onDestroy() {
-/*        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.notification_icon)
-                        .setContentTitle("My notification")
-                        .setContentText("Notification after destroy");
-// Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, AddReminderActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(AddReminderActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        mBuilder.setOngoing(true);
-        Notification note = mBuilder.build();
-        note.defaults |= Notification.DEFAULT_VIBRATE;
-        note.defaults |= Notification.DEFAULT_SOUND;
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-// mId allows you to update the notification later on.
-        int mId = 0;
-        mNotificationManager.notify(mId, mBuilder.build());
-*/
         Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
-
-
-
 }
