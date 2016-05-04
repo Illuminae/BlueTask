@@ -104,9 +104,8 @@ public class RemListAdapter extends CursorAdapter {
                 Log.d("MAC ADD + Name", chosenAdapter);
                 Log.d("MAC ONLY", adapterAddress);
                 BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(adapterAddress);
+                Log.d("Devicename", device.getName());
                 //TODO: Pass on to ConnectedThread
-                UUID DEFAULT_UUID = UUID.randomUUID();
-
                 ConnectThread t = new ConnectThread(device, context, reminderId);
                 t.start();
                 //BluetoothSocket mSocket = device.createInsecureRfcommSocketToServiceRecord(DEFAULT_UUID);
@@ -118,6 +117,8 @@ public class RemListAdapter extends CursorAdapter {
         builder.show();
 
     }
+
+
 /*    public void myClickHandler(View v, Context context) {
         LinearLayout vwParentRow = (LinearLayout) v.getParent();
         TextView name = (TextView) vwParentRow.getChildAt(1);
