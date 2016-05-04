@@ -3,7 +3,6 @@ package com.bluetask;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -11,18 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
-import com.bluetask.bluetooth.ConnectedThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
-import com.bluetask.database.Position;
-import com.bluetask.database.Reminder;
 import java.util.Set;
-import java.util.UUID;
 
 
 public class RemListAdapter extends CursorAdapter {
@@ -30,7 +26,6 @@ public class RemListAdapter extends CursorAdapter {
         super(context, cursor, 0);
     }
 
-    public ImageButton BluetoothBn;
     public ArrayAdapter<String> BTadapter;
 
     // The newView method is used to inflate a new view and return it,
@@ -49,6 +44,7 @@ public class RemListAdapter extends CursorAdapter {
         TextView remName = (TextView) view.findViewById(R.id.name);
         TextView remDescr = (TextView) view.findViewById(R.id.description);
         TextView remDistance = (TextView) view.findViewById(R.id.distance);
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
 
         // Extract properties from cursor
         final int remId = cursor.getInt(cursor.getColumnIndex("_id"));
@@ -75,8 +71,20 @@ public class RemListAdapter extends CursorAdapter {
             public void onClick(View v) {
                 getBluetoothDialog(context, remId);
             }
-
         });
+/*  Deleting reminder from database once checked
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    BlueTaskDataSource mDB = new BlueTaskDataSource(context);
+                    mDB.open();
+                    mDB.setReminderDone(remId);
+                    mDB.close();
+                }
+            }
+        });*/
     }
 
     private void getBluetoothDialog(Context c, final int reminderId) {
