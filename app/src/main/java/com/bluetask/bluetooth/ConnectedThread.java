@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Looper;
 import android.os.Handler;
+import android.util.Log;
+
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Reminder;
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class ConnectedThread extends Thread {
                 // Send the obtained bytes to the UI activity
                 //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
             } catch (IOException e) {
+                Log.d("OutputStreamExc", e.toString());
 
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

@@ -2,8 +2,6 @@ package com.bluetask;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,15 +19,12 @@ import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static com.bluetask.R.id.ToDoList;
-
+import android.os.Vibrator;
 
 public class MainActivity extends AppCompatActivity {
-
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
@@ -124,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         RemListAdapter todoAdapter = new RemListAdapter(this,reminders);
         // Find ListView to populate
         ListView remItems = (ListView) findViewById(ToDoList);
+        // Setup cursor adapter using cursor from last step
+        RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
         // Attach cursor adapter to the ListView
         remItems.setAdapter(todoAdapter);
     }

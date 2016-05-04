@@ -18,11 +18,9 @@ import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
-
 
 public class RemListAdapter extends ArrayAdapter<Reminder> {
     public RemListAdapter(Context context, ArrayList<Reminder> reminders) {
@@ -86,9 +84,8 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
                 Log.d("MAC ADD + Name", chosenAdapter);
                 Log.d("MAC ONLY", adapterAddress);
                 BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(adapterAddress);
+                Log.d("Devicename", device.getName());
                 //TODO: Pass on to ConnectedThread
-                UUID DEFAULT_UUID = UUID.randomUUID();
-
                 ConnectThread t = new ConnectThread(device, context, reminderId);
                 t.start();
                 }
