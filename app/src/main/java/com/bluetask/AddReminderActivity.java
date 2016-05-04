@@ -33,7 +33,7 @@ public class AddReminderActivity extends AppCompatActivity{
     private BlueTaskDataSource dataSource;
     private String posName = "";
     private String location = "";
-    private List<LocationPair> list = new ArrayList<LocationPair>();
+    private List<LocationPair> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,7 @@ public class AddReminderActivity extends AppCompatActivity{
         ListView myListView = (ListView) convertView.findViewById(R.id.listView1);
         prevPosAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         List<Reminder> reminders = dataSource.getAllReminders();
-        final List<Position> positions = new ArrayList<Position>();
+        final List<Position> positions = new ArrayList<>();
         for (Reminder currentReminder : reminders){
             positions.addAll(currentReminder.getPositionsList());
         }
