@@ -194,9 +194,6 @@ public class MainActivity extends AppCompatActivity {
         // Attach cursor adapter to the ListView
         remItems.setAdapter(todoAdapter);
 
-        // Switch to new cursor and update contents of ListView
-        //todoAdapter.changeCursor(newCursor);
-
     }
 
 

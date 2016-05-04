@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +71,14 @@ public class BlueTaskDataSource {
     public List<Reminder> getAllReminders(){
 
         // Select * FROM TABLE reminders
-        Cursor cursor = mDB.rawQuery(" SELECT *FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
-                + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE + " = 0;", null);
+        Log.d("getAllReminders", "Executing now....");
+        if(mDB == null){
+            Log.d("database is null", "true");
+        }
 
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS
+                + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE + " = 0;", null);
+        Log.d("Cursor in database", cursor.toString());
         List<Reminder> allReminders = new ArrayList<>();
         boolean next = cursor.moveToFirst();
         while(next){
@@ -97,7 +103,7 @@ public class BlueTaskDataSource {
 
             next = cursor.moveToNext();
         }
-
+        cursor.close();
         return allReminders;
 
     }
