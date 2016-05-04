@@ -17,9 +17,14 @@ import android.widget.ListView;
 import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
+import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.bluetask.R.id.ToDoList;
 
 
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     //items that should be shown by the list view are stored here (copied from serieslist example)
     private ArrayAdapter<String> mAdapter;
     private GoogleApiClient client;
+    private BlueTaskDataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,18 +116,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList() {
-        // BlueTaskSQLiteOpenHelper is a SQLiteOpenHelper class connecting to SQLite
-        BlueTaskSQLiteOpenHelper handler = new BlueTaskSQLiteOpenHelper(this);
-        // Get access to the underlying writeable database
-        SQLiteDatabase mDB = handler.getWritableDatabase();
-        // Query for items from the database and get a cursor back
-        Cursor todoCursor = mDB.rawQuery("SELECT " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID + " AS _id," +
-                BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME + ", " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR +
-                " FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
+        ArrayList<Reminder> reminders = new ArrayList<Reminder>(dataSource.getAllReminders());
+        for (Reminder reminder : reminders){
+
+        }
+        // Setup cursor adapter using cursor from last step
+        RemListAdapter todoAdapter = new RemListAdapter(this,reminders);
         // Find ListView to populate
         ListView remItems = (ListView) findViewById(ToDoList);
-        // Setup cursor adapter using cursor from last step
-        RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
         // Attach cursor adapter to the ListView
         remItems.setAdapter(todoAdapter);
     }
