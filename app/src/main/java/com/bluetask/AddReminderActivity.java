@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
@@ -56,7 +54,6 @@ public class AddReminderActivity extends AppCompatActivity{
             public void onClick(View v) {
                 String name = saveNewReminder();
                 if(name != null) {
-                    //createNotification(name);
                     finishWithResult(MainActivity.RESULT_SAVE);
                 }
             }
@@ -132,7 +129,6 @@ public class AddReminderActivity extends AppCompatActivity{
     }
     private void receiveLocation(String location){
         this.location=location;
-        //Toast.makeText(getApplicationContext(), this.location, Toast.LENGTH_SHORT).show();
         if (location != null) {
             getLocDescription();
         }

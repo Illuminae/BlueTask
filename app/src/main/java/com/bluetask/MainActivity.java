@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
@@ -23,25 +22,16 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import static com.bluetask.R.id.ToDoList;
 
-import android.os.Vibrator;
-import android.content.Context;
-
 
 public class MainActivity extends AppCompatActivity {
 
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
-
-
     //the database (copied from serieslist example)
     private BlueTaskDataSource mDB;
     //items that should be shown by the list view are stored here (copied from serieslist example)
     private ArrayAdapter<String> mAdapter;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
     private GoogleApiClient client;
 
     @Override
@@ -50,17 +40,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        /*initializes and opens the database (copied from serieslist example)
-        mDB = new BlueTaskDataSource(this);
-        mDB.open();*/
-
-        /*registers the list view for the context menu (copied from serieslist example)
-        ListView listView = (ListView) findViewById(ToDoList);
-        List remListAdapter = new List(getApplicationContext(),R.layout.list_item);
-        listView.setAdapter(RemListAdapter);
-        registerForContextMenu(listView);*/
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(addReminderIntent, REQUEST_ADD_REMINDER);
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         // start Notification Service
         Intent intent = new Intent(this, NotificationService.class);
@@ -89,20 +66,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
-
         //Updates the displayed list when the Activity becomes visible
         updateList();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
                 "Main Page", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
                 Uri.parse("http://host/path"),
                 // TODO: Make sure this auto-generated app URL is correct.
                 Uri.parse("android-app://com.bluetask/http/host/path")
@@ -130,53 +100,16 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_switch_maps) {
             Intent intent = new Intent(MainActivity.this, MapsActivity.class);
             startActivity(intent);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-
-   /* @Override
-    /**
-     * this is executed when an item of a context menu is selected
-
-    public boolean onContextItemSelected(MenuItem item) {
-        //get information on the related list item
-        AdapterView.AdapterContextMenuInfo info =
-                (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        //check which context menu item was selected
-        switch(item.getItemId())  {
-            case R.id.action_delete:
-                Reminder reminder = mAdapter.getItem(info.position);
-                mDB.deleteReminder(reminder.id);
-                updateList();
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
-    }
-    */
-
-
-    /**
-     * delete all reminders from the database and update the adapter
-
-    private void clearList() {
-        mDB.clearReminders();
-        updateList();
-    }
-*/
-    /*
-     * Updates the list adapter and, thus, the UI element
-     */
     private void updateList() {
-
         // BlueTaskSQLiteOpenHelper is a SQLiteOpenHelper class connecting to SQLite
         BlueTaskSQLiteOpenHelper handler = new BlueTaskSQLiteOpenHelper(this);
         // Get access to the underlying writeable database
@@ -185,18 +118,12 @@ public class MainActivity extends AppCompatActivity {
         Cursor todoCursor = mDB.rawQuery("SELECT " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID + " AS _id," +
                 BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME + ", " + BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR +
                 " FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERS + ";", null);
-
-
         // Find ListView to populate
         ListView remItems = (ListView) findViewById(ToDoList);
         // Setup cursor adapter using cursor from last step
         RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
         // Attach cursor adapter to the ListView
         remItems.setAdapter(todoAdapter);
-
-        // Switch to new cursor and update contents of ListView
-        //todoAdapter.changeCursor(newCursor);
-
     }
 
 
@@ -222,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
@@ -239,14 +165,10 @@ public class MainActivity extends AppCompatActivity {
         client.disconnect();
     }
 
-
-
     private void startBluetoothServer(){
         Context c = getApplicationContext();
         Thread btThread = new AcceptThread(c);
         btThread.start();
     }
-
-
-    }
+}
 

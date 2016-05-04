@@ -3,7 +3,6 @@ package com.bluetask;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
@@ -17,10 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
-import com.bluetask.bluetooth.ConnectedThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
-import com.bluetask.database.Position;
-import com.bluetask.database.Reminder;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,8 +25,6 @@ public class RemListAdapter extends CursorAdapter {
     public RemListAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
     }
-
-    public ImageButton BluetoothBn;
     public ArrayAdapter<String> BTadapter;
 
     // The newView method is used to inflate a new view and return it,
@@ -55,13 +49,6 @@ public class RemListAdapter extends CursorAdapter {
         int distance = cursor.getInt(cursor.getColumnIndex("_id"));
         String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
         String description = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
-
-       /* BlueTaskDataSource getPositionsForReminder();
-
-                for(Position : List){
-                distance = geo_data
-                }
-        */
 
         // Populate fields with extracted properties
         remID.setText(String.valueOf(remId));
@@ -109,24 +96,9 @@ public class RemListAdapter extends CursorAdapter {
 
                 ConnectThread t = new ConnectThread(device, context, reminderId);
                 t.start();
-                //BluetoothSocket mSocket = device.createInsecureRfcommSocketToServiceRecord(DEFAULT_UUID);
-                //ConnectedThread sendThread = new ConnectedThread(mSocket,context);
-                //sendThread.start();
-                //sendThread.write(reminderId);
                 }
         });
         builder.show();
 
     }
-/*    public void myClickHandler(View v, Context context) {
-        LinearLayout vwParentRow = (LinearLayout) v.getParent();
-        TextView name = (TextView) vwParentRow.getChildAt(1);
-        BlueTaskDataSource mDB = new BlueTaskDataSource(context);
-        List<Reminder> r = new ArrayList<>();
-        r = mDB.getAllReminders();
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        BluetoothDevice recipient = new BluetoothDevice();
-        Thread sendThread = new ConnectedThread();
-    }*/
 }
