@@ -2,29 +2,43 @@ package com.bluetask;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.bluetask.bluetooth.AcceptThread;
 import com.bluetask.database.BlueTaskDataSource;
-import com.bluetask.database.BlueTaskSQLiteOpenHelper;
+import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import static com.bluetask.R.id.ToDoList;
-import android.os.Vibrator;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
-public class MainActivity extends AppCompatActivity {
+import static com.bluetask.R.id.ToDoList;
+
+public class MainActivity extends AppCompatActivity implements LocationListener {
     public final static int REQUEST_ADD_REMINDER = 0;
     public final static int RESULT_SAVE = 1;
     public final static int RESULT_CANCEL = 0;
@@ -34,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<String> mAdapter;
     private GoogleApiClient client;
     private BlueTaskDataSource dataSource;
+    protected double currentLat = 0;
+    protected double currentLong = 0;
+    protected LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +71,14 @@ public class MainActivity extends AppCompatActivity {
         // start Notification Service
         Intent intent = new Intent(this, NotificationService.class);
         startService(intent);
-        startBluetoothServer();
+        try{startBluetoothServer();}catch (NullPointerException e){};
+        //GET YOUR CURRENT LOCATION
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "permission not granted", Toast.LENGTH_SHORT).show();
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
     }
 
     @Override
@@ -111,16 +135,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList() {
-        ArrayList<Reminder> reminders = new ArrayList<Reminder>(dataSource.getAllReminders());
-        for (Reminder reminder : reminders){
-
+        dataSource = new BlueTaskDataSource(this);
+        dataSource.open();
+        ArrayList<Reminder> reminders = new ArrayList<Reminder>((ArrayList<Reminder>)dataSource.getAllReminders());
+        Map<Reminder,Float> map = new TreeMap<>();
+        for (Reminder reminder : reminders) {
+            map.put(reminder,distanceInMeters(reminder));
+        }
+        map = MapUtil.sortByValue(map);
+        reminders = null;
+        for (Map.Entry<Reminder, Float> entry : map.entrySet()){
+            reminders.add(entry.getKey());
         }
         // Setup cursor adapter using cursor from last step
         RemListAdapter todoAdapter = new RemListAdapter(this,reminders);
         // Find ListView to populate
         ListView remItems = (ListView) findViewById(ToDoList);
-        // Setup cursor adapter using cursor from last step
-        RemListAdapter todoAdapter = new RemListAdapter(this, todoCursor);
         // Attach cursor adapter to the ListView
         remItems.setAdapter(todoAdapter);
     }
@@ -169,5 +199,51 @@ public class MainActivity extends AppCompatActivity {
         Thread btThread = new AcceptThread(c);
         btThread.start();
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLat = location.getLatitude();
+        currentLong = location.getLongitude();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public float distanceInMeters(Reminder r) {
+        Location loc1 = new Location("");
+        loc1.setLatitude(currentLat);
+        loc1.setLongitude(currentLong);
+        List<Position> positions = r.getPositionsList();
+        ArrayList<Float> Min_distance_list = new ArrayList<>();
+        for (Position p : positions) {
+            String geoloc = p.getGeo_data();
+            Log.d("Position Notification", p.getGeo_data());
+            geoloc = geoloc.substring(10, geoloc.length() - 1);
+            String[] separated = geoloc.split(",");
+            String x = separated[0];
+            String y = separated[1];
+            double xdouble = Double.parseDouble(x);
+            double ydouble = Double.parseDouble(y);
+            Location loc2 = new Location("");
+            loc2.setLatitude(xdouble);
+            loc2.setLongitude(ydouble);
+            float distanceInMeters = loc1.distanceTo(loc2) - p.getRadius();
+            Min_distance_list.add(distanceInMeters);
+        }
+        return Collections.min(Min_distance_list);
+    }
+
 }
 
