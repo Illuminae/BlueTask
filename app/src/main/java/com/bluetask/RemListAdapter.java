@@ -20,10 +20,11 @@ import com.bluetask.bluetooth.ConnectThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class RemListAdapter extends ArrayAdapter<Reminder> {
-    public RemListAdapter(Context context, ArrayList<Reminder> reminders) {
+    public RemListAdapter(Context context, List<Reminder> reminders) {
         super(context, 0, reminders);
     }
 

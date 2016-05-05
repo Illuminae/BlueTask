@@ -137,18 +137,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private void updateList() {
         dataSource = new BlueTaskDataSource(this);
         dataSource.open();
-        ArrayList<Reminder> reminders = new ArrayList<Reminder>((ArrayList<Reminder>)dataSource.getAllReminders());
-        Map<Reminder,Float> map = new TreeMap<>();
+        List<Reminder> reminders = dataSource.getAllReminders();
+        Map<Integer,Float> map = new TreeMap<>();
         for (Reminder reminder : reminders) {
-            map.put(reminder,distanceInMeters(reminder));
+            map.put(reminder.getId(),distanceInMeters(reminder));
         }
         map = MapUtil.sortByValue(map);
         reminders = null;
-        for (Map.Entry<Reminder, Float> entry : map.entrySet()){
-            reminders.add(entry.getKey());
+        for (Map.Entry<Integer, Float> entry : map.entrySet()){
+            reminders.add(dataSource.getReminderById(entry.getKey()));
         }
         // Setup cursor adapter using cursor from last step
-        RemListAdapter todoAdapter = new RemListAdapter(this,reminders);
+        RemListAdapter todoAdapter = new RemListAdapter(this, reminders);
         // Find ListView to populate
         ListView remItems = (ListView) findViewById(ToDoList);
         // Attach cursor adapter to the ListView
