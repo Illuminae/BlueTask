@@ -2,8 +2,6 @@ package com.bluetask.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.os.Looper;
-import android.os.Handler;
 import android.util.Log;
 
 import com.bluetask.database.BlueTaskDataSource;
@@ -31,7 +29,9 @@ public class ConnectedThread extends Thread {
         try {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+            Log.e("getStreamExc", e.toString());
+        }
 
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
@@ -40,26 +40,36 @@ public class ConnectedThread extends Thread {
 
     public void run() {
         Reminder r;
-        //Handler mHandler = new Handler(Looper.getMainLooper());
 
         // Keep listening to the InputStream until an exception occurs
+        //while(true) {
+        try {
+            Log.d("Wait for input", "...");
+            ObjectInputStream dis = new ObjectInputStream(mmInStream);
+            // Read from the InputStream
+            r = (Reminder) dis.readObject();
+            Log.d("OBJECT", r.toString());
+            // writing received Reminder to database
+            mDB.createReminder(r);
+            // Send the obtained bytes to the UI activity
+            //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+            dis.close();
+            mmInStream.close();
+            mmOutStream.close();
+        } catch (IOException e) {
+            Log.d("OutputStreamExc", e.toString());
 
+        } catch (ClassNotFoundException e) {
+            Log.e("ClassNotFoundExc", e.toString());
+        } finally  {
             try {
-                ObjectInputStream dis = new ObjectInputStream(mmInStream);
-                // Read from the InputStream
-                r = (Reminder) dis.readObject();
-                // writing received Reminder to database
-                mDB.createReminder(r);
-
-                // Send the obtained bytes to the UI activity
-                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                mmSocket.close();
+                //break;
             } catch (IOException e) {
-                Log.d("OutputStreamExc", e.toString());
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                Log.e("SocketCloseExc", e.toString());
             }
-
+        }
+        //}
     }
 
     /* Call this from the main activity to send data to the remote device */
@@ -69,7 +79,9 @@ public class ConnectedThread extends Thread {
             Reminder r = mDB.getReminderById(remId);
             ObjectOutputStream ois = new ObjectOutputStream(mmOutStream);
             ois.writeObject(r);
-        } catch (IOException e) { }
+        } catch (IOException e) {
+            Log.e("WriteExc", e.toString());
+        }
     }
 
     /* Call this from the main activity to shutdown the connection */

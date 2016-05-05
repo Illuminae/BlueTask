@@ -4,22 +4,17 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
-import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +24,6 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
     }
 
     public ArrayAdapter<String> BTadapter;
-
     // The bindView method is used to bind all data to a given view
     // such as setting the text on a TextView.
     public View getView(int position, View view, ViewGroup parent) {
@@ -37,6 +31,7 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
         TextView remID = (TextView) view.findViewById(R.id.rem_ID);
         TextView remName = (TextView) view.findViewById(R.id.name);
         TextView remDescr = (TextView) view.findViewById(R.id.description);
+        TextView remDistance = (TextView) view.findViewById(R.id.distance);
 
         if (view == null) {
             LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
@@ -103,7 +98,7 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
                 //TODO: Pass on to ConnectedThread
                 ConnectThread t = new ConnectThread(device, context, reminderId);
                 t.start();
-                }
+            }
         });
         builder.show();
 
