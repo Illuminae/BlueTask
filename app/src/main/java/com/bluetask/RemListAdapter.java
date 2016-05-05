@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -19,13 +20,14 @@ import com.bluetask.bluetooth.ConnectThread;
 import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class RemListAdapter extends ArrayAdapter<Reminder> {
-    public RemListAdapter(Context context, ArrayList<Reminder> reminders) {
+    public RemListAdapter(Context context, List<Reminder> reminders) {
         super(context, 0, reminders);
     }
+
     public ArrayAdapter<String> BTadapter;
 
     // The bindView method is used to bind all data to a given view
@@ -57,6 +59,19 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
         });
 
         return view;
+/*  Deleting reminder from database once checked
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    BlueTaskDataSource mDB = new BlueTaskDataSource(context);
+                    mDB.open();
+                    mDB.setReminderDone(remId);
+                    mDB.close();
+                }
+            }
+        });*/
     }
 
     private void getBluetoothDialog(Context c, final int reminderId) {
