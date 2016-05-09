@@ -24,23 +24,24 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
     }
 
     public ArrayAdapter<String> BTadapter;
-    // The bindView method is used to bind all data to a given view
+    // The getView method is used to bind all data to a given view
     // such as setting the text on a TextView.
     public View getView(int position, View view, ViewGroup parent) {
+        if (view == null) {
+            view = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+        }
         // Find fields to populate in inflated template
         TextView remID = (TextView) view.findViewById(R.id.rem_ID);
         TextView remName = (TextView) view.findViewById(R.id.name);
         TextView remDescr = (TextView) view.findViewById(R.id.description);
-        TextView remDistance = (TextView) view.findViewById(R.id.distance);
+        //TextView remDistance = (TextView) view.findViewById(R.id.distance);
 
-        if (view == null) {
-            LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
-        }
+
         // Get the data item for this position
         final Reminder reminder = getItem(position);
 
         // Populate fields with extracted properties
-        remID.setText(reminder.getId());
+        remID.setText(reminder.getId()+"");
         remName.setText(reminder.getName());
         remDescr.setText(reminder.getDescription());
 

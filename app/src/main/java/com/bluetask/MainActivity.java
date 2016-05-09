@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         return super.onOptionsItemSelected(item);
     }
 
+    //Fetches all reminders from DB, sorts them by current distance, passes them on to the custom Adapter.
     private void updateList() {
         dataSource = new BlueTaskDataSource(this);
         dataSource.open();
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             map.put(reminder.getId(),distanceInMeters(reminder));
         }
         map = MapUtil.sortByValue(map);
-        reminders = null;
+        reminders.clear();
         for (Map.Entry<Integer, Float> entry : map.entrySet()){
             reminders.add(dataSource.getReminderById(entry.getKey()));
         }
