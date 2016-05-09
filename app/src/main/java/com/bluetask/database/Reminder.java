@@ -1,5 +1,6 @@
 package com.bluetask.database;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * Each instance of the reminder class holds to-dos and Positions at which those to-dos can be
  * accomplished.
  */
-public class Reminder {
+public class Reminder implements Serializable {
 
     private int id;
     private String name;
@@ -80,5 +81,9 @@ public class Reminder {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public String toString()  {
+        return id + ", " + name;
     }
 }
