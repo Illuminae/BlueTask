@@ -101,6 +101,5 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
             }
         });
         builder.show();
-
     }
 }
