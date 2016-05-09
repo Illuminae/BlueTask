@@ -1,11 +1,13 @@
 package com.bluetask.database;
 
+import java.io.Serializable;
+
 /**
  * Created by Erik on 29/03/2016.
  * Each instance of the position class will hold information on where goods specified in a reminder
  * can be purchased.
  */
-public class Position {
+public class Position implements Serializable{
 
     private int id;
     private String title;

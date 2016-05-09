@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BlueTaskSQLiteOpenHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "bluetask.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     public static final String TABLE_REMINDERS = "reminders";
     public static final String TABLE_REMINDERPOSITIONS = "rem_pos";

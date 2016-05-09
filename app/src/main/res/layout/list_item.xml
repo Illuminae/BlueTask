@@ -39,7 +39,6 @@ android:focusableInTouchMode="true">
         android:layout_height="wrap_content"
         android:layout_column="17"
         android:src="@drawable/bluetooth_icon" />
-
 </TableRow>
 
     <TableRow android:layout_height="wrap_content"
@@ -55,18 +54,6 @@ android:focusableInTouchMode="true">
         android:height="40dp"
         android:gravity="top"
         android:textSize="13dp" />
-
-        <TextView android:layout_height="wrap_content"
-        android:layout_width="10sp"
-        android:layout_weight="1"
-        android:textColor="#000000"
-        android:gravity="end"
-        android:id="@+id/distance"
-        android:text="XXX Meter"
-        android:height="40sp"
-        android:paddingRight="25dp"
-        android:textSize="11dp"
-        android:layout_column="2" />
 
         <CheckBox
         android:layout_width="50sp"
