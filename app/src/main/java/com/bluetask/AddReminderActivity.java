@@ -31,6 +31,7 @@ public class AddReminderActivity extends AppCompatActivity{
     private BlueTaskDataSource dataSource;
     private String posName = "";
     private String location = "";
+    private String currentId=null;
     private List<LocationPair> list = new ArrayList<>();
 
     @Override
@@ -84,6 +85,21 @@ public class AddReminderActivity extends AppCompatActivity{
         });
 
         receiveLocation(getIntent().getStringExtra("point"));
+        currentId = getIntent().getStringExtra("id");
+        if (currentId!=null) {
+            Reminder currentReminder = dataSource.getReminderById(Integer.parseInt(currentId));
+            TextView editDes = (TextView) findViewById(R.id.add_edittext_description);
+            TextView editTitle = (TextView) findViewById(R.id.add_edittext_title);
+            editTitle.setText(currentReminder.getName());
+            editDes.setText(currentReminder.getDescription());
+            final List<Position> positions = new ArrayList<>();
+            positions.addAll(currentReminder.getPositionsList());
+            for (Position currentPosition : positions){
+                location = currentPosition.getGeo_data();
+                posName = currentPosition.getTitle();
+                addPosition();
+            }
+        }
     }
 
     private void selectPreviousLocations() {
