@@ -4,22 +4,17 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
-import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
-import com.bluetask.database.BlueTaskSQLiteOpenHelper;
 import com.bluetask.database.Reminder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -106,6 +101,5 @@ public class RemListAdapter extends ArrayAdapter<Reminder> {
                 }
         });
         builder.show();
-
     }
 }
