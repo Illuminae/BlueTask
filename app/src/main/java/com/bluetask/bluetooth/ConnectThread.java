@@ -5,10 +5,13 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.util.Log;
-
+import com.bluetask.database.BlueTaskDataSource;
+import com.bluetask.database.Reminder;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
+
 
 public class ConnectThread extends Thread {
     private BluetoothSocket mmSocket;
@@ -26,13 +29,15 @@ public class ConnectThread extends Thread {
         mmDevice = device;
         context = c;
         reminderId = remId;
-        DEFAULT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+        DEFAULT_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9bffff");
 
         // Get a BluetoothSocket to connect with the given BluetoothDevice
         try {
             // MY_UUID is the app's UUID string, also used by the server code
             tmp = device.createRfcommSocketToServiceRecord(DEFAULT_UUID);
-        } catch (IOException e) { }
+        } catch (IOException e) {
+            Log.d("RFCommException", e.toString());
+        }
         mmSocket = tmp;
     }
 
@@ -51,25 +56,33 @@ public class ConnectThread extends Thread {
             try {
                 mmSocket =(BluetoothSocket) mmDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(mmDevice,1);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                Log.e("IllegalAccessExc", e.toString());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                Log.e("InvocTargetExc", e.toString());
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                Log.e("NoSuchMethodExc", e.toString());
             }
             try {
                 mmSocket.connect();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("SocketConnectExc", e.toString());
                 return;
             }
-
-
         }
 
-        ConnectedThread writeSocket = new ConnectedThread(mmSocket, context);
-        writeSocket.start();
-        writeSocket.write(reminderId);
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(mmSocket.getOutputStream());
+            BlueTaskDataSource mDB = new BlueTaskDataSource(context);
+            Reminder r = mDB.getReminderById(reminderId);
+            Log.d("WRITE", r.toString());
+            oos.writeObject(r);
+            //oos.close();
+        } catch (IOException e) {
+            Log.e("EXCEPTION", e.toString());
+        }
+        //ConnectedThread writeSocket = new ConnectedThread(mmSocket, context);
+        //writeSocket.start();
+        //writeSocket.write(reminderId);
         //manageConnectedSocket(mmSocket);
     }
 

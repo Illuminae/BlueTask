@@ -21,6 +21,7 @@ public class BlueTaskDataSource {
 
     public BlueTaskDataSource(Context context){
         mHelper = new BlueTaskSQLiteOpenHelper(context);
+        open();
     }
 
     // Create and/or open the database to be used for select/insert/update
