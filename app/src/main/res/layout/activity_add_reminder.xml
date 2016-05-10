@@ -86,7 +86,8 @@
         android:layout_margin="8dp"
         android:id="@+id/add_radius"
         android:layout_below="@id/add_location_description"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
 
     <EditText
         android:layout_width="wrap_content"
