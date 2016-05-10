@@ -45,19 +45,19 @@ public class NotificationService extends Service implements LocationListener {
         @Override
         public void handleMessage(Message msg) {
             // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
-
-            Context context = getApplicationContext();
-            dataSource = new BlueTaskDataSource(context);
-            dataSource.open();
-            Location loc1 = new Location("");
-            Location loc2 = new Location("");
+            // For our sample, we just sleep for 30 seconds.
             int count = 0;
-            List<Reminder> reminders = dataSource.getAllReminders();
-            Log.d("Service Status", "Database open, iterating reminders");
             while (count < 50) {
+                Context context = getApplicationContext();
+                dataSource = new BlueTaskDataSource(context);
+                dataSource.open();
+                List<Reminder> reminders = dataSource.getAllReminders();
+                dataSource.getPositions();
+                dataSource.getIntersectionTable();
+                dataSource.close();
+                Log.d("Service Status", "Database open, iterating reminders");
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(30000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -74,7 +74,7 @@ public class NotificationService extends Service implements LocationListener {
                                             .setContentText(r.getName());
                             // Creates an explicit intent for an Activity in your app
                             Intent resultIntent = new Intent(context, AddReminderActivity.class);
-
+                            resultIntent.putExtra("id", Integer.toString(r.getId()));
                             // The stack builder object will contain an artificial back stack for the
                             // started Activity.
                             // This ensures that navigating backward from the Activity leads out of
@@ -132,7 +132,7 @@ public class NotificationService extends Service implements LocationListener {
         public void onLocationChanged(Location location) {
             currentLat = location.getLatitude();
             currentLong = location.getLongitude();
-            Toast.makeText(this, Double.toString(currentLat), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, Double.toString(currentLat), Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -155,10 +155,11 @@ public class NotificationService extends Service implements LocationListener {
             loc1.setLatitude(currentLat);
             loc1.setLongitude(currentLong);
             List<Position> positions = r.getPositionsList();
-            ArrayList<Float> Min_distance_list = null;
+            ArrayList<Float> Min_distance_list = new ArrayList<>();
             for (Position p : positions) {
                 String geoloc = p.getGeo_data();
-                geoloc = geoloc.substring(9, geoloc.length() - 1);
+                Log.d("Position Notification", p.getGeo_data());
+                geoloc = geoloc.substring(10, geoloc.length() - 1);
                 String[] separated = geoloc.split(",");
                 String x = separated[0];
                 String y = separated[1];
@@ -167,6 +168,7 @@ public class NotificationService extends Service implements LocationListener {
                 Location loc2 = new Location("");
                 loc2.setLatitude(xdouble);
                 loc2.setLongitude(ydouble);
+
                 float distanceInMeters = loc1.distanceTo(loc2) - p.getRadius();
                 Min_distance_list.add(distanceInMeters);
             }

@@ -21,6 +21,7 @@ public class BlueTaskDataSource {
 
     public BlueTaskDataSource(Context context){
         mHelper = new BlueTaskSQLiteOpenHelper(context);
+        open();
     }
 
     // Create and/or open the database to be used for select/insert/update
@@ -82,14 +83,14 @@ public class BlueTaskDataSource {
         List<Reminder> allReminders = new ArrayList<>();
         boolean next = cursor.moveToFirst();
         while(next){
-            int id = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID);
+            int id = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID));
             String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
             String descr = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
-            int date = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE);
+            int date = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE));
             boolean done;
 
             // Simplified if-statement
-            done = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE) == 1;
+            done = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE)) == 1;
             //TO DO: Write and Query function that gets all Positions for the Reminder and adds it to the constructor call
 
 
@@ -107,6 +108,31 @@ public class BlueTaskDataSource {
         return allReminders;
 
     }
+    //get Positions and RemPositions are only for reasons of debugging
+    public void getPositions(){
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_POSITIONS + ";", null);
+        boolean next = cursor.moveToFirst();
+
+        while(next){
+            Log.d("Position ID", Integer.toString(cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_ID))) );
+            Log.d("Position title", cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE)));
+            Log.d("Position geo", cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA)));
+            next = cursor.moveToNext();
+        }
+        cursor.close();
+    }
+
+    public void getIntersectionTable(){
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS + ";", null);
+        boolean next = cursor.moveToFirst();
+
+        while(next){
+            Log.d("REMINDER ID", Integer.toString(cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_POS_ID))) );
+            Log.d("POSITION ID", cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID)));
+            next = cursor.moveToNext();
+        }
+        cursor.close();
+    }
 
     public Reminder getReminderById(int id_query){
 
@@ -117,14 +143,14 @@ public class BlueTaskDataSource {
         Reminder result = null;
         boolean next = cursor.moveToFirst();
         while(next){
-            int id = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID);
+            int id = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_REM_ID));
             String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
             String descr = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
-            int date = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE);
+            int date = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DATE));
             boolean done;
 
             // Simplified if-statement
-            done = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE) == 1;
+            done = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DONE)) == 1;
             //TO DO: Write and Query function that gets all Positions for the Reminder and adds it to the constructor call
 
 
@@ -138,7 +164,7 @@ public class BlueTaskDataSource {
 
             next = cursor.moveToNext();
         }
-
+        cursor.close();
         return result;
 
     }
@@ -148,15 +174,18 @@ public class BlueTaskDataSource {
         // SELECT * FROM TABLE TABLE positions JOIN TABLE REMINDERPOSITIONS WHERE REM_ID = X
 
         String reminder_id = Integer.toString(rem_id);
-        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_POSITIONS + " JOIN " + BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS
+        Cursor cursor = mDB.rawQuery("SELECT * FROM " + BlueTaskSQLiteOpenHelper.TABLE_POSITIONS + " JOIN "
+                + BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS + " ON "
+                + BlueTaskSQLiteOpenHelper.TABLE_POSITIONS + "." + BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_ID + " = "
+                + BlueTaskSQLiteOpenHelper.TABLE_REMINDERPOSITIONS + "." + BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_POS_ID
                 + " WHERE " + BlueTaskSQLiteOpenHelper.REMINDERPOSITIONS_COLUMN_REM_ID + " = " + reminder_id + ";", null);
 
         List<Position> reminderPositions = new ArrayList<>();
         boolean next = cursor.moveToFirst();
         while(next){
-            int id = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_ID);
+            int id = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_ID));
             String title = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_POS_TITLE));
-            int radius = cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_RADIUS);
+            int radius = cursor.getInt(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_RADIUS));
             String geo_data = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.POSITIONS_COLUMN_GEO_DATA));
 
             reminderPositions.add(new Position(id, title, radius, geo_data));

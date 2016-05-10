@@ -3,80 +3,71 @@ package com.bluetask;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ArrayAdapter;
 import com.bluetask.bluetooth.ConnectThread;
-import com.bluetask.bluetooth.ConnectedThread;
-import com.bluetask.database.BlueTaskSQLiteOpenHelper;
-import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
-
-public class RemListAdapter extends CursorAdapter {
-    public RemListAdapter(Context context, Cursor cursor) {
-        super(context, cursor, 0);
+public class RemListAdapter extends ArrayAdapter<Reminder> {
+    public RemListAdapter(Context context, List<Reminder> reminders) {
+        super(context, 0, reminders);
     }
 
-    public ImageButton BluetoothBn;
     public ArrayAdapter<String> BTadapter;
-
-    // The newView method is used to inflate a new view and return it,
-    // you don't bind any data to the view at this point.
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
-    }
-
-    // The bindView method is used to bind all data to a given view
+    // The getView method is used to bind all data to a given view
     // such as setting the text on a TextView.
-    @Override
-    public void bindView(View view, final Context context, Cursor cursor) {
+    public View getView(int position, View view, ViewGroup parent) {
+        if (view == null) {
+            view = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+        }
         // Find fields to populate in inflated template
         TextView remID = (TextView) view.findViewById(R.id.rem_ID);
         TextView remName = (TextView) view.findViewById(R.id.name);
         TextView remDescr = (TextView) view.findViewById(R.id.description);
-        TextView remDistance = (TextView) view.findViewById(R.id.distance);
+        //TextView remDistance = (TextView) view.findViewById(R.id.distance);
 
-        // Extract properties from cursor
-        final int remId = cursor.getInt(cursor.getColumnIndex("_id"));
-        int distance = cursor.getInt(cursor.getColumnIndex("_id"));
-        String name = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_NAME));
-        String description = cursor.getString(cursor.getColumnIndex(BlueTaskSQLiteOpenHelper.REMINDERS_COLUMN_DESCR));
 
-       /* BlueTaskDataSource getPositionsForReminder();
-
-                for(Position : List){
-                distance = geo_data
-                }
-        */
+        // Get the data item for this position
+        final Reminder reminder = getItem(position);
 
         // Populate fields with extracted properties
-        remID.setText(String.valueOf(remId));
-        remName.setText(name);
-        remDescr.setText(description);
-        remDistance.setText(String.valueOf(distance));
+        remID.setText(reminder.getId()+"");
+        remName.setText(reminder.getName());
+        remDescr.setText(reminder.getDescription());
 
         ImageButton btn = (ImageButton) view.findViewById(R.id.blue_Button);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getBluetoothDialog(context, remId);
+                getBluetoothDialog(getContext(), reminder.getId());
             }
 
         });
+
+        return view;
+/*  Deleting reminder from database once checked
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    BlueTaskDataSource mDB = new BlueTaskDataSource(context);
+                    mDB.open();
+                    mDB.setReminderDone(remId);
+                    mDB.close();
+                }
+            }
+        });*/
     }
 
     private void getBluetoothDialog(Context c, final int reminderId) {
@@ -104,29 +95,12 @@ public class RemListAdapter extends CursorAdapter {
                 Log.d("MAC ADD + Name", chosenAdapter);
                 Log.d("MAC ONLY", adapterAddress);
                 BluetoothDevice device = myBluetoothAdapter.getRemoteDevice(adapterAddress);
+                Log.d("Devicename", device.getName());
                 //TODO: Pass on to ConnectedThread
-                UUID DEFAULT_UUID = UUID.randomUUID();
-
                 ConnectThread t = new ConnectThread(device, context, reminderId);
                 t.start();
-                //BluetoothSocket mSocket = device.createInsecureRfcommSocketToServiceRecord(DEFAULT_UUID);
-                //ConnectedThread sendThread = new ConnectedThread(mSocket,context);
-                //sendThread.start();
-                //sendThread.write(reminderId);
-                }
+            }
         });
         builder.show();
-
     }
-/*    public void myClickHandler(View v, Context context) {
-        LinearLayout vwParentRow = (LinearLayout) v.getParent();
-        TextView name = (TextView) vwParentRow.getChildAt(1);
-        BlueTaskDataSource mDB = new BlueTaskDataSource(context);
-        List<Reminder> r = new ArrayList<>();
-        r = mDB.getAllReminders();
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        BluetoothDevice recipient = new BluetoothDevice();
-        Thread sendThread = new ConnectedThread();
-    }*/
 }

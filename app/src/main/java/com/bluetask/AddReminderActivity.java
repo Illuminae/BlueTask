@@ -1,17 +1,21 @@
 package com.bluetask;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
-
 import com.bluetask.database.BlueTaskDataSource;
 import com.bluetask.database.Position;
 import com.bluetask.database.Reminder;
@@ -25,9 +29,10 @@ import java.util.List;
 public class AddReminderActivity extends AppCompatActivity{
 
     private BlueTaskDataSource dataSource;
-    private String m_Text = "";
+    private String posName = "";
     private String location = "";
-    private List<LocationPair> list = new ArrayList<LocationPair>();
+    private String currentId=null;
+    private List<LocationPair> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,6 @@ public class AddReminderActivity extends AppCompatActivity{
             public void onClick(View v) {
                 String name = saveNewReminder();
                 if(name != null) {
-                    //createNotification(name);
                     finishWithResult(MainActivity.RESULT_SAVE);
                 }
             }
@@ -71,9 +75,74 @@ public class AddReminderActivity extends AppCompatActivity{
                 startActivityForResult(intent,100);
             }
         });
+
+        btnAddLocation.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                selectPreviousLocations();
+                return true;
+            }
+        });
+
         receiveLocation(getIntent().getStringExtra("point"));
+        currentId = getIntent().getStringExtra("id");
+        if (currentId!=null) {
+            Reminder currentReminder = dataSource.getReminderById(Integer.parseInt(currentId));
+            TextView editDes = (TextView) findViewById(R.id.add_edittext_description);
+            TextView editTitle = (TextView) findViewById(R.id.add_edittext_title);
+            editTitle.setText(currentReminder.getName());
+            editDes.setText(currentReminder.getDescription());
+            final List<Position> positions = new ArrayList<>();
+            positions.addAll(currentReminder.getPositionsList());
+            for (Position currentPosition : positions){
+                location = currentPosition.getGeo_data();
+                posName = currentPosition.getTitle();
+                addPosition();
+            }
+        }
     }
 
+    private void selectPreviousLocations() {
+        final ArrayAdapter<String> prevPosAdapter;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View convertView = inflater.inflate(R.layout.bluetooth_list, null);
+        builder.setView(convertView);
+        builder.setTitle("Previous locations");
+        ListView myListView = (ListView) convertView.findViewById(R.id.listView1);
+        prevPosAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        List<Reminder> reminders = dataSource.getAllReminders();
+        final List<Position> positions = new ArrayList<>();
+        for (Reminder currentReminder : reminders){
+            positions.addAll(currentReminder.getPositionsList());
+        }
+        for (Position currentPosition : positions){
+            prevPosAdapter.add(currentPosition.getTitle());
+        }
+        myListView.setAdapter(prevPosAdapter);
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Position chosenPos = positions.get(position);
+                location = chosenPos.getGeo_data();
+                posName = chosenPos.getTitle();
+                addPosition();
+            }
+        });
+        builder.show();
+    }
+    private void addPosition(){
+        TextView editText = (TextView) findViewById(R.id.add_location_description);
+        String text = (String) editText.getText();
+        if (text.equals("-")) {
+            text = posName;
+        } else {
+            text = text +", "+ posName;
+        }
+        editText.setText(text);
+        LocationPair pair = new LocationPair(posName,location);
+        list.add(pair);
+    }
     private void receiveLocation(String location){
         this.location=location;
         if (location != null) {
@@ -95,24 +164,15 @@ public class AddReminderActivity extends AppCompatActivity{
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
         builder.setView(input);
 
         // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                m_Text = input.getText().toString();
-                TextView editText = (TextView) findViewById(R.id.add_location_description);
-                String text = (String) editText.getText();
-                if (text.equals("-")) {
-                    text = m_Text;
-                } else {
-                    text = text +", "+ m_Text;
-                }
-                editText.setText(text);
-                LocationPair pair = new LocationPair(m_Text,location);
-                list.add(pair);
+                posName = input.getText().toString();
+                addPosition();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -156,10 +216,7 @@ public class AddReminderActivity extends AppCompatActivity{
                     Position newPosition = new Position(pair.getLocDesc(), radius, pair.getLocCoords());
                     remPositions.add(newPosition);
                 }
-
             }
-
-
             int time = (int) System.currentTimeMillis() % Integer.MAX_VALUE;
             Reminder newReminder = new Reminder(reminderTitle, reminderDescr, time, false, remPositions);
             dataSource.createReminder(newReminder);
