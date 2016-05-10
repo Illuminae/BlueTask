@@ -10,6 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.bluetask.database.BlueTaskDataSource;
+import com.bluetask.database.Position;
+import com.bluetask.database.Reminder;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,13 +21,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
     private GoogleMap mMap;
     private String pActivity="";
+    private BlueTaskDataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +41,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
         Intent intent = getIntent();
         pActivity = intent.getStringExtra("activity");
-
+        dataSource = new BlueTaskDataSource(this);
+        dataSource.open();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -83,13 +92,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             Toast.makeText(getApplicationContext(), "ACCESS_FINE_LOCATION not granted!", Toast.LENGTH_SHORT).show();
         }
-        /*
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            public void onMyLocationChange (Location location){
-                mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("It's Me!"));
-            }
-        });
-        */
+
+        //add markers for each position
+        List<Reminder> reminders = dataSource.getAllReminders();
+        double latitude, longitude;
+        final List<Position> positions = new ArrayList<>();
+        for (Reminder currentReminder : reminders){
+            positions.addAll(currentReminder.getPositionsList());
+        }
+        for (Position currentPosition : positions){
+            String geoloc = currentPosition.getGeo_data();
+            geoloc = geoloc.substring(10, geoloc.length() - 1);
+            String[] separated = geoloc.split(",");
+            latitude = Double.parseDouble(separated[0]);
+            longitude = Double.parseDouble(separated[1]);
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(currentPosition.getTitle()));
+        }
+
+
 
         // zoom in on map
         CameraPosition camPos = new CameraPosition.Builder()
